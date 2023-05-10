@@ -107,14 +107,6 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/test-list',
-      name: 'test-list',
-      component: () => import('@/views/user/TestListApi.vue'),
-      meta: {
-        layout:'full'
-      },
-    },
-    {
       path: '/change-password',
       name: 'change-password',
       component: () => import('@/views/user/ChangePassword.vue'),
