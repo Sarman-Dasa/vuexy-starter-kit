@@ -30,9 +30,8 @@
         <template #button-content>
           <div class="d-sm-flex d-none user-nav">
             <p class="user-name font-weight-bolder mb-0">
-              John Doe
+            {{ user.first_name }} {{  user.last_name }}
             </p>
-            <span class="user-status">Admin</span>
           </div>
           <b-avatar
             size="40"
@@ -50,7 +49,18 @@
             icon="UserIcon"
             class="mr-50"
           />
-          <span>Profile</span>
+          <!-- <span>Profile</span> -->
+          <router-link to="/profile"><span>Profile</span></router-link>
+        </b-dropdown-item>
+
+        <b-dropdown-item link-class="d-flex align-items-center">
+          <feather-icon
+            size="16"
+            icon="LockIcon"
+            class="mr-50"
+          />
+          <b-link to="/change-password">Change<br/>Password</b-link>
+          <!-- <router-link to="/change-password"><span>Change<br/>Password</span></router-link> -->
         </b-dropdown-item>
 
         <b-dropdown-item link-class="d-flex align-items-center">
@@ -88,7 +98,7 @@
             icon="LogOutIcon"
             class="mr-50"
           />
-          <span>Logout</span>
+          <span @click="logout">Logout</span>
         </b-dropdown-item>
       </b-nav-item-dropdown>
     </b-navbar-nav>
@@ -100,7 +110,7 @@ import {
   BLink, BNavbarNav, BNavItemDropdown, BDropdownItem, BDropdownDivider, BAvatar,
 } from 'bootstrap-vue'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
-
+import axios from 'axios'
 export default {
   components: {
     BLink,
@@ -113,11 +123,29 @@ export default {
     // Navbar Components
     DarkToggler,
   },
+  data() {
+    return {
+     user:[]
+    }
+  },
   props: {
     toggleVerticalMenuActive: {
       type: Function,
       default: () => {},
     },
   },
+  methods: {
+    logout() {
+      localStorage.removeItem('userData');
+      this.$router.push("/login");
+    }
+  },
+ async mounted() {
+    this.token = JSON.parse(localStorage.getItem("userData")).accessToken
+    await axios.get('get',{ headers: { Authorization: `Bearer ${this.token}`}})
+    .then((success) => {
+        this.user = success.data.data;
+    });
+  }
 }
 </script>
