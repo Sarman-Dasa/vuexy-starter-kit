@@ -99,7 +99,7 @@
 
         <template #cell(email)="data">
             <span class="text-primary">
-                <a href = "mailto: abc@example.com">Send Email</a>
+                <a href="#">{{ data.value }}</a>
             </span>
         </template>
       </b-table>
