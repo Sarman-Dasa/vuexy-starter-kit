@@ -85,6 +85,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/user-list',
+      name: 'user-list',
+      component: () => import('@/views/user/UserList.vue'),
+      meta: {
+        pageTitle: 'User List',
+        breadcrumb: [
+          {
+            text: 'user list',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/change-password',
       name: 'change-password',
       component: () => import('@/views/user/ChangePassword.vue'),
