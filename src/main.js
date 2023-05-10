@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+import axios from 'axios'
 
 import router from './router'
 import store from './store'
@@ -25,6 +26,10 @@ require('@core/scss/core.scss')
 
 // import assets styles
 require('@/assets/scss/style.scss')
+
+//Set axios base url
+axios.defaults.baseURL = "http://localhost:8000/api/";
+
 
 Vue.config.productionTip = false
 
