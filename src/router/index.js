@@ -41,9 +41,60 @@ const router = new VueRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login.vue'),
+      component: () => import('@/views/auth/Login.vue'),
       meta: {
         layout: 'full',
+      },
+    },
+    {
+      path: '/registration',
+      name: 'registration',
+      component: () => import('@/views/auth/Registration.vue'),
+      meta: {
+        layout: 'full',
+      },
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/auth/ForgotPassword.vue'),
+      meta: {
+        layout: 'full'
+      },
+    },
+    {
+      path: '/reset-password/:token',
+      name: 'reset-password',
+      component : () => import('@/views/auth/ResetPassword.vue'),
+      meta: {
+        layout: 'full'
+      },
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/user/UserProfile.vue'),
+      meta: {
+        pageTitle: 'Profile',
+        breadcrumb: [
+          {
+            text: 'Profile',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/change-password',
+      name: 'change-password',
+      component: () => import('@/views/user/ChangePassword.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text:'ChangePassword',
+            active:true,
+          },
+        ],
       },
     },
     {
