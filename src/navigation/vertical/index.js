@@ -9,4 +9,9 @@ export default [
     route: 'second-page',
     icon: 'FileIcon',
   },
+  {
+    title: 'UserList',
+    route: 'user-list',
+    icon: 'UserIcon'
+  }
 ]
