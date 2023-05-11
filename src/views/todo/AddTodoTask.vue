@@ -214,9 +214,9 @@ export default {
       ],
       status: { title: "--none--", value: null },
       statusOption: [
-        { value: "done", title: "Done" },
-        { value: "undone", title: "UnDone" },
-        { value: "pending", title: "Pending" },
+        { value:1, title: "Done" },
+        { value:0, title: "UnDone" },
+        { value:2, title: "Pending" },
       ],
       dueDate: "",
       title:'',
@@ -250,6 +250,11 @@ export default {
         })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
+          //console.log(success);
+        })
+        .catch((error) => {
+            this.toastMessage(error.response.data.message, "danger");
+            //console.log(error.response.data.message);
         });
     },
     toastMessage(message, type) {
