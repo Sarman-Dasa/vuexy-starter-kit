@@ -13,5 +13,10 @@ export default [
     title: 'UserList',
     route: 'user-list',
     icon: 'UserIcon'
+  },
+  {
+    title: 'Todo',
+    route: 'todo-table',
+    icon: 'CheckSquareIcon'
   }
 ]

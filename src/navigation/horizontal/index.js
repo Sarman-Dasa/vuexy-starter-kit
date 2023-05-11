@@ -17,6 +17,11 @@ export default [
         title: 'UserList',
         route: 'user-list',
         icon: 'Usericon'
+      },
+      {
+        title: 'Todo',
+        route: 'todo-table',
+        icon: 'CheckSquareIcon'
       }
     ],
   },
