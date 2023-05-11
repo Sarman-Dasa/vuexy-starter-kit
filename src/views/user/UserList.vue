@@ -179,7 +179,7 @@ export default {
         },
         {
           true: "light-success",
-          0: "light-primary",
+          false: "light-primary",
         },
       ],
     };
