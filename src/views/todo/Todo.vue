@@ -18,7 +18,7 @@
                   v-ripple.400="'rgba(255, 255, 200, 0.15)'"
                   variant="secondary"
                   block
-                  @click=""
+                  @click="tab='TodoList'"
                 >
                   List Todo
                 </b-button>
@@ -56,6 +56,7 @@ import {
   BListGroup,
 } from "bootstrap-vue";
 import AddTodoTask from './AddTodoTask.vue'
+import TodoList from './TodoList.vue'
 export default {
   directives: {
     Ripple,
@@ -66,6 +67,7 @@ export default {
     BRow,
     BCol,
     AddTodoTask,
+    TodoList,
   },
   data() {
     return {
