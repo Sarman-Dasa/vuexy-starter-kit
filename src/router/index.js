@@ -120,6 +120,19 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/todo',
+      name: 'todo-table',
+      component: () => import('@/views/todo/Todo.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
+    },
+    {
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
