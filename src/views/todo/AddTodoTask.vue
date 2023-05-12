@@ -15,10 +15,22 @@
         <!-- Fill User Name in dropdown box -->
         <b-col md="6">
           <b-form-group label="Assignee" label-for="assignee" label-cols-md="4">
-            <validation-provider #default="{ errors }" name="Priority" rules="required">
-              <v-select v-model="userName" label="title" :options="fullName" id="priority"
-                :start="priority === null ? false : null" />
+            <validation-provider #default="{ errors }" name="name" rules="required">
+              <!-- <v-select
+                v-model="userName"
+                label="title"
+                :options="fullName"
+                :value="fullNameKey"
+                id="name"
+                :state="userName === null ? false : null"
+              /> -->
+              <select name="" id="" v-model="userName" class="form-control">
+                <option v-for="user in users" :key="user.id" :value="user.id">
+                  {{ user.first_name }} {{ user.last_name }}
+                </option>
+              </select>
               <span class="text-danger"> {{ errors[0] }}</span>
+              value {{ userName }}
             </validation-provider>
           </b-form-group>
         </b-col>
@@ -79,7 +91,7 @@
         <b-col offset-md="4" md="4">
           <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" type="submit" variant="primary" class="mr-1"
             @click="checkFormValidation">
-            {{ isEditable ? 'Update' : 'Save' }}
+            {{ isEditable ? "Update" : "Save" }}
           </b-button>
           <b-button v-ripple.400="'rgba(186, 191, 199, 0.15)'" type="reset" @click.prevent="clearForm"
             variant="outline-secondary">
@@ -87,7 +99,6 @@
           </b-button>
         </b-col>
       </b-row>
-
     </b-form>
   </validation-observer>
 </template>
@@ -111,6 +122,7 @@ import { required } from "@validations";
 import { VueAutosuggest } from "vue-autosuggest";
 import axios from "axios";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+
 export default {
   components: {
     BRow,
@@ -145,16 +157,18 @@ export default {
         { value: 2, title: "Pending" },
       ],
       dueDate: "",
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       required,
       firstName: [],
       filteredOptions: [],
       limit: 10,
       selected: null,
       fullName: [],
-      userName: "",
+      fullNameKey: [],
+      userName: false,
       isEditable: false,
+      users: [],
     };
   },
   methods: {
@@ -166,6 +180,7 @@ export default {
         }
       });
     },
+
     // call create api to insert todo data
     async saveTodo() {
       let method = axios.post;
@@ -182,6 +197,7 @@ export default {
         status: this.status.value,
         priority: this.priority.value,
         due_date: this.dueDate,
+        user_id: this.userName,
       })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
@@ -192,6 +208,7 @@ export default {
           //console.log(error.response.data.message);
         });
     },
+
     // toast message for comman use
     toastMessage(message, type) {
       this.$toast({
@@ -203,35 +220,34 @@ export default {
         },
       });
     },
+
     //Clear form data
     clearForm() {
-      if(this.id) {
-        this.fillUpFormData()
-      }
-      else {
-        this.dueDate = "",
-        this.title = '',
-        this.description = ''
-        this.status  = '--none--',
-        this.priority = '--none--'
+      if (this.id) {
+        this.fillUpFormData();
+      } else {
+        (this.dueDate = ""), (this.title = ""), (this.description = "");
+        (this.status = "--none--"), (this.priority = "--none--");
       }
     },
+
     // Fill up form data when edit button click
     async fillUpFormData() {
-      await axios.get(`todo/get/${this.id}`)
-        .then((success) => {
-          let todo = success.data.data;
-          this.title = todo.title;
-          this.description = todo.description;
-          this.dueDate = todo.due_date;
-          this.priority.title = todo.priority;
-          this.priority.value = todo.priority;
-          this.status.title = (todo.priority === true ? 'Undone' : 'Done');
-          this.status.value = todo.status;
-          this.isEditable = true;
-        })
-    }
+      await axios.get(`todo/get/${this.id}`).then((success) => {
+        let todo = success.data.data;
+        this.title = todo.title;
+        this.description = todo.description;
+        this.dueDate = todo.due_date;
+        this.priority.title = todo.priority;
+        this.priority.value = todo.priority;
+        this.status.title = todo.priority === true ? "Undone" : "Done";
+        this.status.value = todo.status;
+        this.isEditable = true;
+        this.userName = todo.user.id;
+      });
+    },
   },
+
   async created() {
     const pluck = (arr, key) => arr.map((i) => i[key]);
     // get login user token
@@ -244,9 +260,24 @@ export default {
         //if get only first name
         this.firstName = pluck(success.data.data.users, "first_name");
         // Get First name and last name with merge
-        this.fullName = success.data.data.users.map(function (element) {
-          return `${element.first_name} ${element.last_name}`;
-        });
+
+        this.users = success.data.data.users;
+        // this.fullName = success.data.data.users.map(function (element) {
+        //   return `${element.first_name} ${element.last_name}`;
+        // });
+
+        // let fname = success.data.data.users.map(function (element) {
+        //   return `${element.first_name} ${element.last_name}`;
+        // });
+        //   let id = success.data.data.users.map(function (element) {
+        //   return `${element.id}`;
+        // });
+        // let data =[]
+        // for (var i = 0; i < id.length; i++)
+        //   data[id[i]] = fname[i];
+
+        // this.fullName = data;
+        // console.log();
       });
   },
   mounted() {
