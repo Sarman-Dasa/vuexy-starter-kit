@@ -29,7 +29,9 @@
       </div>
     </b-col>
     <b-col sm="10">
-        <component :is="tab"/>
+        <!-- <component :is="tab"/> -->
+        <AddTodoTask v-if="tab === 'AddTodoTask'" :id="editId"/>
+        <TodoList v-if="tab === 'TodoList'" @todo_id="getTodoEditData"/>
     </b-col>
   </b-row>
 </template>
@@ -68,10 +70,17 @@ export default {
     BCol,
     AddTodoTask,
     TodoList,
-  },
+},
   data() {
     return {
-        tab:'TodoList'
+        tab:'TodoList',
+        editId:''
+    }
+  },
+  methods: {
+    getTodoEditData(todo_id) {
+      this.tab = "AddTodoTask";
+      this.editId = todo_id;
     }
   }
 };
