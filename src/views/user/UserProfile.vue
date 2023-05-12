@@ -1,13 +1,35 @@
 <template>
   <b-card>
     <b-row>
-      <b-col sm="3" class="d-none d-lg-flex align-items-center p-5">
+      <!-- <b-col sm="3" class="d-none d-lg-flex align-items-center p-5">
         <div
           class="w-100 d-lg-flex align-items-center justify-content-center px-5"
         >
           <b-img fluid src="@/assets/images/logo/logo.svg" alt="User Logo" />
         </div>
-      </b-col>
+      </b-col> -->
+
+      <b-media class="mb-2">
+      <template #aside>
+        <b-avatar
+          ref="previewEl"
+          :src="image"
+          text="avatarText(userData.fullName)"
+          variant="light-primary"
+          size="90px"
+          rounded
+        />
+      </template>
+      <h4 class="mb-1">
+        {{  user.first_name }}
+      </h4>
+       <b-form-file
+        v-model="user.userImage"
+        placeholder="Choose a file or drop it here..."
+        drop-placeholder="Drop file here..."
+        @change="uploadFile"
+      />
+    </b-media>
     </b-row>
     <!-- User Profile  -->
     <validation-observer ref="userProfileValidation">
@@ -127,6 +149,7 @@ import {
   BMediaBody,
   BLink,
   BImg,
+  BAvatar
 } from "bootstrap-vue";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email } from "@validations";
@@ -154,6 +177,7 @@ export default {
     VuexyLogo,
     ValidationObserver,
     ValidationProvider,
+    BAvatar,
   },
   data() {
     return {
@@ -163,6 +187,8 @@ export default {
         email: "",
         phone: "",
         is_active: false,
+        userImage:'',
+        image:''
       },
       token: "",
       required,
@@ -199,6 +225,10 @@ export default {
         },
       });
     },
+    uploadFile(e) {
+      const file = e.target.files[0];
+      this.image = URL.createObjectURL(file);
+    }
   },
   async mounted() {
     this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
