@@ -5,17 +5,8 @@
         <!-- Title -->
         <b-col md="6">
           <b-form-group label="Title" label-for="title" label-cols-md="4">
-            <validation-provider
-              #default="{ errors }"
-              name="Title"
-              rules="required"
-            >
-              <b-form-input
-                id="title"
-                placeholder="Title"
-                v-model="title"
-                :state="errors.length > 0 ? false : null"
-              />
+            <validation-provider #default="{ errors }" name="Title" rules="required">
+              <b-form-input id="title" placeholder="Title" v-model="title" :state="errors.length > 0 ? false : null" />
               <span class="text-danger"> {{ errors[0] }}</span>
             </validation-provider>
           </b-form-group>
@@ -24,18 +15,9 @@
         <!-- Fill User Name in dropdown box -->
         <b-col md="6">
           <b-form-group label="Assignee" label-for="assignee" label-cols-md="4">
-            <validation-provider
-              #default="{ errors }"
-              name="Priority"
-              rules="required"
-            >
-              <v-select
-                v-model="userName"
-                label="title"
-                :options="fullName"
-                id="priority"
-                :start="priority === null ? false : null"
-              />
+            <validation-provider #default="{ errors }" name="Priority" rules="required">
+              <v-select v-model="userName" label="title" :options="fullName" id="priority"
+                :start="priority === null ? false : null" />
               <span class="text-danger"> {{ errors[0] }}</span>
             </validation-provider>
           </b-form-group>
@@ -43,24 +25,10 @@
 
         <!-- Description -->
         <b-col md="6">
-          <b-form-group
-            label="Description"
-            label-for="description"
-            label-cols-md="4"
-          >
-            <validation-provider
-              #default="{ errors }"
-              name="Description"
-              rules="required"
-            >
-              <b-form-textarea
-                id="description"
-                placeholder="Description"
-                rows="3"
-                v-model="description"
-                no-resize
-                :state="errors.length > 0 ? false : null"
-              />
+          <b-form-group label="Description" label-for="description" label-cols-md="4">
+            <validation-provider #default="{ errors }" name="Description" rules="required">
+              <b-form-textarea id="description" placeholder="Description" rows="3" v-model="description" no-resize
+                :state="errors.length > 0 ? false : null" />
               <span class="text-danger"> {{ errors[0] }}</span>
             </validation-provider>
           </b-form-group>
@@ -68,22 +36,10 @@
 
         <!-- Due Date -->
         <b-col md="6">
-          <b-form-group
-            label="Choose a date"
-            for="example-datepicker"
-            label-cols-md="4"
-          >
-            <validation-provider
-              #default="{ errors }"
-              name="Due Date"
-              rules="required"
-            >
-              <b-form-datepicker
-                id="example-datepicker"
-                v-model="dueDate"
-                class="mb-1"
-                :state="errors.length > 0 ? false : null"
-              />
+          <b-form-group label="Choose a date" for="example-datepicker" label-cols-md="4">
+            <validation-provider #default="{ errors }" name="Due Date" rules="required">
+              <b-form-datepicker id="example-datepicker" v-model="dueDate" class="mb-1"
+                :state="errors.length > 0 ? false : null" />
               <!-- <p>Value: '{{ dueDate }}'</p> -->
               <span class="text-danger"> {{ errors[0] }}</span>
             </validation-provider>
@@ -94,23 +50,10 @@
         <b-col md="6">
           <b-form-group>
             <b-col md="12">
-              <b-form-group
-                label="Priority"
-                label-for="priority"
-                label-cols-md="4"
-              >
-                <validation-provider
-                  #default="{ errors }"
-                  name="Priority"
-                  rules="required"
-                >
-                  <v-select
-                    v-model="priority"
-                    label="title"
-                    :options="option"
-                    id="priority"
-                    :start="priority === null ? false : null"
-                  />
+              <b-form-group label="Priority" label-for="priority" label-cols-md="4">
+                <validation-provider #default="{ errors }" name="Priority" rules="required">
+                  <v-select v-model="priority" label="title" :options="option" id="priority"
+                    :start="priority === null ? false : null" />
                   <span class="text-danger"> {{ errors[0] }}</span>
                 </validation-provider>
               </b-form-group>
@@ -123,18 +66,9 @@
         <b-col md="6">
           <b-col md="12">
             <b-form-group label="Status" label-for="status" label-cols-md="4">
-              <validation-provider
-                #default="{ errors }"
-                name="status"
-                rules="required"
-              >
-                <v-select
-                  v-model="status"
-                  label="title"
-                  :options="statusOption"
-                  id="status"
-                  :state="errors.length > 0 ? false : null"
-                />
+              <validation-provider #default="{ errors }" name="status" rules="required">
+                <v-select v-model="status" label="title" :options="statusOption" id="status"
+                  :state="errors.length > 0 ? false : null" />
                 <span class="text-danger"> {{ errors[0] }}</span>
               </validation-provider>
             </b-form-group>
@@ -143,25 +77,17 @@
 
         <!-- submit and reset -->
         <b-col offset-md="4" md="4">
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            type="submit"
-            variant="primary"
-            class="mr-1"
-            @click="checkFormValidation"
-          >
-            Submit
+          <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" type="submit" variant="primary" class="mr-1"
+            @click="checkFormValidation">
+            {{ isEditable ? 'Update' : 'Save' }}
           </b-button>
-          <b-button
-            v-ripple.400="'rgba(186, 191, 199, 0.15)'"
-            type="reset"
-            @click.prevent="clearForm"
-            variant="outline-secondary"
-          >
+          <b-button v-ripple.400="'rgba(186, 191, 199, 0.15)'" type="reset" @click.prevent="clearForm"
+            variant="outline-secondary">
             Reset
           </b-button>
         </b-col>
       </b-row>
+
     </b-form>
   </validation-observer>
 </template>
@@ -214,13 +140,13 @@ export default {
       ],
       status: { title: "--none--", value: null },
       statusOption: [
-        { value:1, title: "Done" },
-        { value:0, title: "UnDone" },
-        { value:2, title: "Pending" },
+        { value: 1, title: "Done" },
+        { value: 0, title: "UnDone" },
+        { value: 2, title: "Pending" },
       ],
       dueDate: "",
-      title:'',
-      description:'',
+      title: '',
+      description: '',
       required,
       firstName: [],
       filteredOptions: [],
@@ -228,9 +154,11 @@ export default {
       selected: null,
       fullName: [],
       userName: "",
+      isEditable: false,
     };
   },
   methods: {
+    // Check form validation
     checkFormValidation() {
       this.$refs.todoFormValidation.validate().then((success) => {
         if (success) {
@@ -238,25 +166,33 @@ export default {
         }
       });
     },
+    // call create api to insert todo data
     async saveTodo() {
-        console.log(this.priority.value);
-      await axios
-        .post("todo/create", {
-          title: this.title,
-          description: this.description,
-          status: this.status.value,
-          priority: this.priority.value,
-          due_date: this.dueDate,
-        })
+      let method = axios.post;
+      let url = "todo/create";
+
+      if (this.isEditable) {
+        method = axios.put;
+        url = `todo/update/${this.id}`;
+      }
+      console.log(this.status.value);
+      await method(url, {
+        title: this.title,
+        description: this.description,
+        status: this.status.value,
+        priority: this.priority.value,
+        due_date: this.dueDate,
+      })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
           //console.log(success);
         })
         .catch((error) => {
-            this.toastMessage(error.response.data.message, "danger");
-            //console.log(error.response.data.message);
+          this.toastMessage(error.response.data.message, "danger");
+          //console.log(error.response.data.message);
         });
     },
+    // toast message for comman use
     toastMessage(message, type) {
       this.$toast({
         component: ToastificationContent,
@@ -267,8 +203,33 @@ export default {
         },
       });
     },
+    //Clear form data
     clearForm() {
-       
+      if(this.id) {
+        this.fillUpFormData()
+      }
+      else {
+        this.dueDate = "",
+        this.title = '',
+        this.description = ''
+        this.status  = '--none--',
+        this.priority = '--none--'
+      }
+    },
+    // Fill up form data when edit button click
+    async fillUpFormData() {
+      await axios.get(`todo/get/${this.id}`)
+        .then((success) => {
+          let todo = success.data.data;
+          this.title = todo.title;
+          this.description = todo.description;
+          this.dueDate = todo.due_date;
+          this.priority.title = todo.priority;
+          this.priority.value = todo.priority;
+          this.status.title = (todo.priority === true ? 'Undone' : 'Done');
+          this.status.value = todo.status;
+          this.isEditable = true;
+        })
     }
   },
   async created() {
@@ -287,13 +248,17 @@ export default {
           return `${element.first_name} ${element.last_name}`;
         });
       });
-    /* 
-        let users = this.name;
-        console.log(users);
-            let userFullnames = users.map(function(element){
-                return `${element.first_name} ${element.last_name}`;
-            })
-    */
+  },
+  mounted() {
+    if (this.id > 0) {
+      this.fillUpFormData();
+    }
+  },
+  beforeDestroy() {
+    this.id = 0;
+  },
+  props: {
+    id: Number,
   },
 };
 </script>
