@@ -1,21 +1,43 @@
 <template>
-  <b-row>
+  <b-row sm="12">
     <b-col md="2" sm="4" class="my-1">
       <b-form-group class="mb-0">
         <label class="d-inline-block text-sm-left mr-50">Per page</label>
-        <b-form-select id="perPageSelect" v-model="perPage" size="sm" :options="pageOptions" class="w-50" />
+        <b-form-select
+          id="perPageSelect"
+          v-model="perPage"
+          size="sm"
+          :options="pageOptions"
+          class="w-50"
+        />
       </b-form-group>
     </b-col>
     <b-col md="4" sm="8" class="my-1">
-      <b-form-group label="Sort" label-cols-sm="3" label-align-sm="right" label-size="sm" label-for="sortBySelect"
-        class="mb-0">
+      <b-form-group
+        label="Sort"
+        label-cols-sm="3"
+        label-align-sm="right"
+        label-size="sm"
+        label-for="sortBySelect"
+        class="mb-0"
+      >
         <b-input-group size="sm">
-          <b-form-select id="sortBySelect" v-model="sortBy" :options="sortOptions" class="w-75">
+          <b-form-select
+            id="sortBySelect"
+            v-model="sortBy"
+            :options="sortOptions"
+            class="w-75"
+          >
             <template v-slot:first>
               <option value="">-- none --</option>
             </template>
           </b-form-select>
-          <b-form-select v-model="sortDesc" size="sm" :disabled="!sortBy" class="w-25">
+          <b-form-select
+            v-model="sortDesc"
+            size="sm"
+            :disabled="!sortBy"
+            class="w-25"
+          >
             <option :value="false">Asc</option>
             <option :value="true">Desc</option>
           </b-form-select>
@@ -23,10 +45,21 @@
       </b-form-group>
     </b-col>
     <b-col md="6" class="my-1">
-      <b-form-group label="Filter" label-cols-sm="3" label-align-sm="right" label-size="sm" label-for="filterInput"
-        class="mb-0">
+      <b-form-group
+        label="Filter"
+        label-cols-sm="3"
+        label-align-sm="right"
+        label-size="sm"
+        label-for="filterInput"
+        class="mb-0"
+      >
         <b-input-group size="sm">
-          <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search" />
+          <b-form-input
+            id="filterInput"
+            v-model="filter"
+            type="search"
+            placeholder="Type to Search"
+          />
           <b-input-group-append>
             <b-button :disabled="!filter" @click="filter = ''">
               Clear
@@ -36,10 +69,22 @@
       </b-form-group>
     </b-col>
 
-    <b-col cols="12">
-      <b-table striped hover responsive :per-page="perPage" :current-page="currentPage" :items="items" :fields="fields"
-        :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :sort-direction="sortDirection" :filter="filter"
-        :filter-included-fields="filterOn" @filtered="onFiltered">
+    <b-col sm="12">
+      <b-table
+        striped
+        hover
+        responsive
+        :per-page="perPage"
+        :current-page="currentPage"
+        :items="items"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        :filter="filter"
+        :filter-included-fields="filterOn"
+        @filtered="onFiltered"
+      >
         <!-- status column  -->
         <template #cell(status)="data">
           <b-badge :variant="status[1][data.value]">
@@ -56,16 +101,26 @@
 
         <!-- Due Date Column -->
         <template #cell(due_date)="data">
-          <b-badge :variant="data.value == today ? 'light-danger' : 'light-success'">
+          <b-badge
+            :variant="data.value == today ? 'light-danger' : 'light-success'"
+          >
             {{ data.value }}
           </b-badge>
         </template>
 
         <!-- Action Column -->
         <template #cell(action)="data">
-          <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+          <b-dropdown
+            variant="link"
+            toggle-class="text-decoration-none"
+            no-caret
+          >
             <template v-slot:button-content>
-              <feather-icon icon="MoreVerticalIcon" size="16" class="text-body align-middle mr-25" />
+              <feather-icon
+                icon="MoreVerticalIcon"
+                size="16"
+                class="text-body align-middle mr-25"
+              />
             </template>
             <b-dropdown-item>
               <feather-icon icon="Edit2Icon" class="mr-50" />
@@ -77,15 +132,25 @@
               <span @click="deleteData(data.item.id)">Delete</span>
             </b-dropdown-item>
           </b-dropdown>
+        </template>
 
-
+       
+        <!-- User image -->
+        <template #cell(avatar)="data">
+            <b-avatar variant="primary" :text="data.item.user.first_name[0] + data.item.user.last_name[0]"></b-avatar>
         </template>
       </b-table>
     </b-col>
 
     <b-col cols="12">
-      <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" size="sm"
-        class="my-0" />
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="center"
+        size="sm"
+        class="my-0"
+      />
     </b-col>
   </b-row>
 </template>
@@ -150,7 +215,9 @@ export default {
         { key: "status", label: "Status", sortable: true },
         { key: "priority", label: "Priority", sortable: true },
         { key: "due_date", label: "Due Date", sortable: true },
-        { key: "action", label: "Action", value: "id" },
+        { key: "user.first_name", label: "User", sortable: true },
+        {key: 'avatar', label:'Image'},
+        { key: "action", label: "Action", value: "id" }
         //   { key: "is_active", label: "Status", sortable: true },
       ],
       items: [],
@@ -188,7 +255,7 @@ export default {
     },
   },
   async mounted() {
-      this.fillTodoTable();
+    this.fillTodoTable();
   },
   methods: {
     onFiltered(filteredItems) {
@@ -209,17 +276,18 @@ export default {
       this.today = moment(String(cdate)).format("Y-DD-MM");
     },
     editData(id) {
-      this.$emit('todo_id', id)
+      this.$emit("todo_id", id);
     },
     async deleteData(id) {
-      await axios.delete(`todo/delete/${id}`)
+      await axios
+        .delete(`todo/delete/${id}`)
         .then((success) => {
-          this.toastMessage(success.data.message, 'success');
+          this.toastMessage(success.data.message, "success");
           this.fillTodoTable();
         })
         .catch((error) => {
-          this.toastMessage("Data not found!!!", 'danger');
-        })
+          this.toastMessage("Data not found!!!", "danger");
+        });
     },
     // toast message for comman use
     toastMessage(message, type) {
