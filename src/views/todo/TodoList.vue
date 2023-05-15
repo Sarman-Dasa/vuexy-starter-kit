@@ -44,7 +44,8 @@
         </b-input-group>
       </b-form-group>
     </b-col>
-    <b-col md="6" class="my-1">
+
+    <b-col md="4" class="my-1">
       <b-form-group
         label="Filter"
         label-cols-sm="3"
@@ -69,6 +70,34 @@
       </b-form-group>
     </b-col>
 
+    <!-- Export -->
+    <b-col md="2" class="my-1">
+      <b-button
+        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+        variant="success"
+        block
+        @click="exportData"
+      >
+        Export
+      </b-button>
+    </b-col>
+
+    <!-- range -->
+    <b-col md="6">
+      <b-form-group>
+        <h5>Range</h5>
+        <flat-pickr
+          v-model="datefilter"
+          class="form-control"
+          :config="{ mode: 'range'}"
+        />
+        <b-input-group-append>
+            <b-button @click="clearDateFilter">
+              Clear
+            </b-button>
+          </b-input-group-append>
+      </b-form-group>
+    </b-col>
     <b-col sm="12">
       <b-table
         striped
@@ -76,7 +105,7 @@
         responsive
         :per-page="perPage"
         :current-page="currentPage"
-        :items="items"
+        :items="resultQuery"
         :fields="fields"
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
@@ -134,14 +163,16 @@
           </b-dropdown>
         </template>
 
-       
         <!-- User image -->
         <template #cell(avatar)="data">
-            <b-avatar variant="primary" :text="data.item.user.first_name[0] + data.item.user.last_name[0]"></b-avatar>
+          <b-avatar
+            variant="primary"
+            :text="data.item.user.first_name[0] + data.item.user.last_name[0]"
+          ></b-avatar>
         </template>
+
       </b-table>
     </b-col>
-
     <b-col cols="12">
       <b-pagination
         v-model="currentPage"
@@ -174,8 +205,11 @@ import {
   BLink,
 } from "bootstrap-vue";
 import axios from "axios";
+import Ripple from "vue-ripple-directive";
 import moment from "moment";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import flatPickr from 'vue-flatpickr-component'
+import Test from '../Test/Test.vue'
 export default {
   components: {
     BTable,
@@ -193,6 +227,11 @@ export default {
     BDropdown,
     BDropdownItem,
     BLink,
+    flatPickr,
+    Test,
+  },
+  directives: {
+    Ripple,
   },
   data() {
     return {
@@ -204,6 +243,7 @@ export default {
       sortDesc: false,
       sortDirection: "asc",
       filter: null,
+      range:null,
       filterOn: [],
       fields: [
         {
@@ -216,8 +256,8 @@ export default {
         { key: "priority", label: "Priority", sortable: true },
         { key: "due_date", label: "Due Date", sortable: true },
         { key: "user.first_name", label: "User", sortable: true },
-        {key: 'avatar', label:'Image'},
-        { key: "action", label: "Action", value: "id" }
+        { key: "avatar", label: "Image" },
+        { key: "action", label: "Action", value: "id" },
         //   { key: "is_active", label: "Status", sortable: true },
       ],
       items: [],
@@ -244,6 +284,7 @@ export default {
         },
       ],
       today: "",
+      datefilter:''
     };
   },
   computed: {
@@ -252,6 +293,30 @@ export default {
       return this.fields
         .filter((f) => f.sortable)
         .map((f) => ({ text: f.label, value: f.key }));
+    },
+    resultQuery() {
+      const byDate = (item) => {
+        const itemDate = new Date(item.due_date);
+        return (
+          itemDate >= new Date(this.datefilter.split('to')[0]) &&
+          itemDate <= new Date(this.datefilter.split('to')[1])
+        );
+      };
+
+      let results = this.items;
+
+
+      const hasDateFilter =
+        this.datefilter?.length >= 2 &&
+        this.datefilter[0] &&
+        this.datefilter[1];
+      if (hasDateFilter) {
+        results = results.filter(byDate);
+        this.totalRows = results.length;
+        this.currentPage = 1;
+      }
+
+      return results;
     },
   },
   async mounted() {
@@ -300,6 +365,34 @@ export default {
         },
       });
     },
-  },
+    // Clear Date Filter
+    clearDateFilter() {
+      this.datefilter = ''
+    },
+    // exportData
+    async exportData() {
+      let datefilter  = this.datefilter.split('to');
+      let startDate = moment(datefilter[0],"YYYY-MM-DD");
+      let endDate = moment(datefilter[1],"YYYY-MM-DD")
+      await axios.post('/todo/export-data',{
+        start_date:startDate,
+        end_date:endDate,
+      })
+        .then((success) => {
+          this.toastMessage(success.data.message, 'success');
+          console.log(success.data);
+          var fileURL = window.URL.createObjectURL(new Blob([success.data]));
+          var fileLink = document.createElement('a');
+          fileLink.href = fileURL;
+          fileLink.setAttribute('download', 'test.csv');
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        })
+    }
+  }
 };
 </script>
+
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-flatpicker.scss';
+</style>
