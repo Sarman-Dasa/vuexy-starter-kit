@@ -106,7 +106,8 @@
         </b-input-group>
       </b-form-group>
     </b-col>
-    
+
+    <!-- Table  -->
     <b-col sm="12">
       <b-table
         striped
@@ -162,8 +163,8 @@
             </template>
             <b-dropdown-item>
               <feather-icon icon="Edit2Icon" class="mr-50" />
-              <span @click="editData(data.item.id)">Edit</span>
-              <!-- <b-link :to="{ name: 'todo-edit', params:{id:1}}">edit</b-link> -->
+              <!-- <span @click="editData(data.item.id)">Edit</span> -->
+              <b-link :to="{ name: 'todo-edit', params:{id:data.item.id}}">edit</b-link>
             </b-dropdown-item>
             <b-dropdown-item>
               <feather-icon icon="TrashIcon" class="mr-50" />
@@ -182,6 +183,7 @@
 
       </b-table>
     </b-col>
+    <!-- Pagination -->
     <b-col cols="12">
       <b-pagination
         v-model="currentPage"
@@ -211,14 +213,13 @@ import {
   BButton,
   BDropdown,
   BDropdownItem,
-  BLink,
+  BLink
 } from "bootstrap-vue";
 import axios from "axios";
 import Ripple from "vue-ripple-directive";
 import moment from "moment";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import flatPickr from 'vue-flatpickr-component'
-import Test from '../Test/Test.vue'
 export default {
   components: {
     BTable,
@@ -236,8 +237,7 @@ export default {
     BDropdown,
     BDropdownItem,
     BLink,
-    flatPickr,
-    Test,
+    flatPickr
   },
   directives: {
     Ripple,
@@ -294,6 +294,7 @@ export default {
       ],
       today: "",
       datefilter:'',
+      statusFilter:null
     };
   },
   computed: {
@@ -312,24 +313,39 @@ export default {
         );
       };
 
+      const byStatus = (item) => {
+        return(
+          item.status == this.statusFilter
+        );
+      };
       let results = this.items;
 
 
-      const hasDateFilter =
-        this.datefilter?.length >= 2 &&
-        this.datefilter[0] &&
-        this.datefilter[1];
-      if (hasDateFilter) {
+      // const hasDateFilter =
+      //   this.datefilter?.length >= 2 &&
+      //   this.datefilter[0] &&
+      //   this.datefilter[1];
+      if (this.datefilter) {
         results = results.filter(byDate);
-        this.totalRows = results.length;
-        this.currentPage = 1;
+      }
+      if(this.statusFilter !=null) {
+        results = results.filter(byStatus);
+        // this.totalRows = results.length;
+        // console.log( this.totalRows );
+        // this.currentPage = 1;
       }
 
+     
       return results;
     },
   },
   async mounted() {
     this.fillTodoTable();
+    this.filter = this.$route.params.tag;
+    this.statusFilter = this.$route.params.filter;
+  },
+  destroyed() {
+    this.statusFilter = '';
   },
   methods: {
     onFiltered(filteredItems) {
@@ -387,10 +403,11 @@ export default {
       await axios.post('/todo/export-data',{
         start_date:startDate,
         end_date:endDate,
+        search:this.filter,
       })
         .then((success) => {
           this.toastMessage(success.data.message, 'success');
-          console.log(success.data);
+          //console.log(success.data);
           var fileURL = window.URL.createObjectURL(new Blob([success.data]));
           var fileLink = document.createElement('a');
           fileLink.href = fileURL;
