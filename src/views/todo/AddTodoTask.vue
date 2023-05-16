@@ -169,6 +169,7 @@ export default {
       userName: false,
       isEditable: false,
       users: [],
+      id:0,
     };
   },
   methods: {
@@ -185,11 +186,9 @@ export default {
     async saveTodo() {
       let method = axios.post;
       let url = "todo/create";
-
       if (this.isEditable) {
         method = axios.put;
         url = `todo/update/${this.id}`;
-        this.id = 0
       }
       await method(url, {
         title: this.title,
@@ -204,6 +203,7 @@ export default {
           //console.log(success);
           this.isEditable = false;
           this.resetForm();
+         console.log(this.$router.push('/todo'))
         })
         .catch((error) => {
           //this.toastMessage(error.response.data.message, "danger");
@@ -285,17 +285,14 @@ export default {
         // console.log();
       });
   },
-  props:['id'],
+  // props:['id'],
   mounted() {
+    this.id = this.$route.params.id
+    console.log(this.id);
     if (this.id > 0) {
       this.fillUpFormData();
-      console.log("Edit ID Mounted: ",this.id)
     }
-  },
-  beforeDestroy() {
-    this.id = 0;
-    console.log("Edit ID beforeDestroy: ",this.id)
-  },
+  }
 };
 </script>
 <style lang="scss">
