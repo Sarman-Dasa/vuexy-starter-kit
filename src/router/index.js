@@ -118,11 +118,67 @@ const router = new VueRouter({
           },
         ],
       },
+    }, 
+    {
+      path: '/todo-add',
+      name: 'todo-add',
+      component: () => import('@/views/todo/AddTodoTask.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
     },
     {
       path: '/todo',
       name: 'todo-table',
-      component: () => import('@/views/todo/Todo.vue'),
+      component: () => import('@/views/todo/TodoList.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/todo-edit/:id',
+      name: 'todo-edit',
+      component: () => import('@/views/todo/AddTodoTask.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/apps-todo-filter-tag/:tag',
+      name:'apps-todo-filter-tag',
+      component: () => import('@/views/todo/TodoList.vue'),
+      beforeEnter(to, _, next) {
+        if ([ 'low', 'medium', 'high'].includes(to.params.tag)) next()
+        else next({ name: 'error-404' })
+      },
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/apps-todo-filter/:filter',
+      name:'apps-todo-filter',
+      component: () => import('@/views/todo/TodoList.vue'),
       meta: {
         breadcrumb :[
           {
