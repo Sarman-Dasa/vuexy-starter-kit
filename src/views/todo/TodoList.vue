@@ -45,6 +45,7 @@
       </b-form-group>
     </b-col>
 
+    <!-- search  -->
     <b-col md="4" class="my-1">
       <b-form-group
         label="Filter"
@@ -83,21 +84,29 @@
     </b-col>
 
     <!-- range -->
-    <b-col md="6">
-      <b-form-group>
-        <h5>Range</h5>
+    <b-col md="4" sm="4" class="my-1 float-right">
+      <b-form-group
+        label="Date Range"
+        label-cols-sm="3"
+        label-size="sm"
+        label-for="filterInput"
+        class="mb-0"  
+      >
+      <b-input-group size="sm">
         <flat-pickr
           v-model="datefilter"
           class="form-control"
           :config="{ mode: 'range'}"
         />
         <b-input-group-append>
-            <b-button @click="clearDateFilter">
+            <b-button :disabled="!datefilter" @click="clearDateFilter">
               Clear
             </b-button>
           </b-input-group-append>
+        </b-input-group>
       </b-form-group>
     </b-col>
+    
     <b-col sm="12">
       <b-table
         striped
@@ -284,7 +293,7 @@ export default {
         },
       ],
       today: "",
-      datefilter:''
+      datefilter:'',
     };
   },
   computed: {
@@ -340,6 +349,7 @@ export default {
       let cdate = currentDate.toLocaleDateString();
       this.today = moment(String(cdate)).format("Y-DD-MM");
     },
+    //send edit data id 
     editData(id) {
       this.$emit("todo_id", id);
     },
