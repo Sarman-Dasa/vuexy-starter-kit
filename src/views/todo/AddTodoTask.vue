@@ -30,7 +30,7 @@
                 </option>
               </select>
               <span class="text-danger"> {{ errors[0] }}</span>
-              value {{ userName }}
+              <!-- value {{ userName }} -->
             </validation-provider>
           </b-form-group>
         </b-col>
@@ -93,7 +93,7 @@
             @click="checkFormValidation">
             {{ isEditable ? "Update" : "Save" }}
           </b-button>
-          <b-button v-ripple.400="'rgba(186, 191, 199, 0.15)'" type="reset" @click.prevent="clearForm"
+          <b-button v-ripple.400="'rgba(186, 191, 199, 0.15)'" type="reset" @click.prevent="resetForm"
             variant="outline-secondary">
             Reset
           </b-button>
@@ -189,8 +189,8 @@ export default {
       if (this.isEditable) {
         method = axios.put;
         url = `todo/update/${this.id}`;
+        this.id = 0
       }
-      console.log(this.status.value);
       await method(url, {
         title: this.title,
         description: this.description,
@@ -202,13 +202,18 @@ export default {
         .then((success) => {
           this.toastMessage(success.data.message, "success");
           //console.log(success);
+          this.isEditable = false;
+          this.resetForm();
         })
         .catch((error) => {
-          this.toastMessage(error.response.data.message, "danger");
-          //console.log(error.response.data.message);
+          //this.toastMessage(error.response.data.message, "danger");
+            let err  = error.response.data.data;
+
+            Object.values(err).forEach(val => {
+                this.toastMessage(val[0],'danger')
+            });
         });
     },
-
     // toast message for comman use
     toastMessage(message, type) {
       this.$toast({
@@ -222,7 +227,7 @@ export default {
     },
 
     //Clear form data
-    clearForm() {
+    resetForm() {
       if (this.id) {
         this.fillUpFormData();
       } else {
@@ -280,16 +285,16 @@ export default {
         // console.log();
       });
   },
+  props:['id'],
   mounted() {
     if (this.id > 0) {
       this.fillUpFormData();
+      console.log("Edit ID Mounted: ",this.id)
     }
   },
   beforeDestroy() {
     this.id = 0;
-  },
-  props: {
-    id: Number,
+    console.log("Edit ID beforeDestroy: ",this.id)
   },
 };
 </script>
