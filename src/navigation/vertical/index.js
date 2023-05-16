@@ -16,7 +16,35 @@ export default [
   },
   {
     title: 'Todo',
-    route: 'todo-table',
-    icon: 'CheckSquareIcon'
-  }
+    icon: 'CheckSquareIcon',
+    children: [
+      {
+        title: 'Add Task',
+        route: 'todo-add',
+        icon: 'PlusIcon'
+      },
+      {
+        title: 'My Task',
+        route: 'todo-table',
+        icon:  'MailIcon'
+      },
+      { 
+        title: 'Completed', 
+        icon: 'CheckIcon', 
+        route: { name: 'apps-todo-filter', params: { filter: '1' } } 
+      },
+      { 
+        title: 'High', 
+        route: { name: 'apps-todo-filter-tag', params: { tag: 'high' } } 
+      },
+      { 
+        title: 'Low', 
+        route: { name: 'apps-todo-filter-tag', params: { tag: 'low' } } 
+      },
+      { 
+        title: 'Medium', 
+        route: { name: 'apps-todo-filter-tag', params: { tag: 'medium' } } 
+      },
+    ],
+  },
 ]
