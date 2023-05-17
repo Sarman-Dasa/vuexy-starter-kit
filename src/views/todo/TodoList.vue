@@ -251,7 +251,7 @@ export default {
       sortBy: "",
       sortDesc: false,
       sortDirection: "asc",
-      filter: null,
+      filter:null,
       range:null,
       filterOn: [],
       fields: [
@@ -326,23 +326,68 @@ export default {
       //   this.datefilter[0] &&
       //   this.datefilter[1];
       if (this.datefilter) {
-        results = results.filter(byDate);
+         results = results.filter(byDate);
+        // this.totalRows = results.length;
+        // console.log("Total Row :",this.totalRows );
+        // this.currentPage = 1;
       }
       if(this.statusFilter !=null) {
         results = results.filter(byStatus);
         // this.totalRows = results.length;
-        // console.log( this.totalRows );
+        // console.log("Total Row :",this.totalRows );
         // this.currentPage = 1;
       }
-
-     
+      this.totalRows = results.length;
+      console.log("Total Row :",this.totalRows );
+      this.currentPage = 1;
       return results;
     },
   },
-  async mounted() {
+  watch: {
+    '$route'() {
+      this.statusFilter =null;
+      this.filter='';
+      let parm = this.$route.params;
+      if(parm.tag) {
+        this.filter = this.$route.params.tag;
+      }
+      else{
+         this.statusFilter = this.$route.params.filter
+      }
+      console.log(this.$route.params.tag);
+    }
+  },
+  // beforeRouteUpdate(to, from, next) {
+  //   let parm = this.$route.params;
+  //     if(parm.tag) {
+  //       this.filter = this.$route.params.tag;
+  //     }
+  //     else{
+  //        this.statusFilter = this.$route.params.filter
+  //     }
+  //    next()
+  // },
+  mounted() {
     this.fillTodoTable();
-    this.filter = this.$route.params.tag;
-    this.statusFilter = this.$route.params.filter;
+    // console.log("Filter: ",this.statusFilter);
+    // this.$watch( ()=> this.$route.path,(to, from)=> {
+    //      console.log('route path has changed from ' +from+' to '+to )
+    //   })
+    //   this.$watch( ()=> this.$route.path,(to, from)=> {
+    //      console.log('route path has changed from '+ this.$route.params[0] )
+    //   }) 
+
+    // this.$router.history.listen((newLocation) =>{
+    //   if(newLocation.params.tag) {
+    //     this.filter = newLocation.params.tag;
+    //     console.log("If Filter: ",this.statusFilter);
+    //   }else {
+    //     this.statusFilter = newLocation.params.filter;
+    //     console.log("Else Filter: ",this.statusFilter);
+    //   }
+    //   //console.log(newLocation.params);
+    //   // console.log("Filter: ",this.statusFilter);
+    // })
   },
   destroyed() {
     this.statusFilter = '';
@@ -355,7 +400,6 @@ export default {
     },
     async fillTodoTable() {
       this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
-      console.log("Token :", this.token);
       await axios.post("todo/list").then((success) => {
         this.items = success.data.data.todos;
       });
@@ -407,7 +451,6 @@ export default {
       })
         .then((success) => {
           this.toastMessage(success.data.message, 'success');
-          //console.log(success.data);
           var fileURL = window.URL.createObjectURL(new Blob([success.data]));
           var fileLink = document.createElement('a');
           fileLink.href = fileURL;
