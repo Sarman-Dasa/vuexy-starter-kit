@@ -13,22 +13,16 @@
         </b-col>
 
         <!-- Fill User Name in dropdown box -->
-        <b-col md="6">
+        <b-col md="6" sm="12">
           <b-form-group label="Assignee" label-for="assignee" label-cols-md="4">
             <validation-provider #default="{ errors }" name="name" rules="required">
-              <!-- <v-select
-                v-model="userName"
-                label="title"
-                :options="fullName"
-                :value="fullNameKey"
-                id="name"
-                :state="userName === null ? false : null"
-              /> -->
-              <select name="" id="" v-model="userName" class="form-control">
+              <v-select v-model="userName" label="title" id="name" :options="userData"
+                :state="userName === '' ? false : null" />
+              <!-- <select name="" id="" v-model="userName" class="form-control">
                 <option v-for="user in users" :key="user.id" :value="user.id">
                   {{ user.first_name }} {{ user.last_name }}
                 </option>
-              </select>
+              </select> -->
               <span class="text-danger"> {{ errors[0] }}</span>
               <!-- value {{ userName }} -->
             </validation-provider>
@@ -36,7 +30,7 @@
         </b-col>
 
         <!-- Description -->
-        <b-col md="6">
+        <b-col md="6" sm="12">
           <b-form-group label="Description" label-for="description" label-cols-md="4">
             <validation-provider #default="{ errors }" name="Description" rules="required">
               <b-form-textarea id="description" placeholder="Description" rows="3" v-model="description" no-resize
@@ -47,7 +41,7 @@
         </b-col>
 
         <!-- Due Date -->
-        <b-col md="6">
+        <b-col md="6" sm="12">
           <b-form-group label="Choose a date" for="example-datepicker" label-cols-md="4">
             <validation-provider #default="{ errors }" name="Due Date" rules="required">
               <b-form-datepicker id="example-datepicker" v-model="dueDate" class="mb-1"
@@ -59,7 +53,7 @@
         </b-col>
 
         <!-- Priority -->
-        <b-col md="6">
+        <b-col md="6" sm="12">
           <b-form-group>
             <b-col md="12">
               <b-form-group label="Priority" label-for="priority" label-cols-md="4">
@@ -75,7 +69,7 @@
         </b-col>
 
         <!-- Status -->
-        <b-col md="6">
+        <b-col md="6" sm="12">
           <b-col md="12">
             <b-form-group label="Status" label-for="status" label-cols-md="4">
               <validation-provider #default="{ errors }" name="status" rules="required">
@@ -88,7 +82,7 @@
         </b-col>
 
         <!-- submit and reset -->
-        <b-col offset-md="4" md="4">
+        <b-col offset-md="4" md="4" sm="12">
           <b-button v-ripple.400="'rgba(255, 255, 255, 0.15)'" type="submit" variant="primary" class="mr-1"
             @click="checkFormValidation">
             {{ isEditable ? "Update" : "Save" }}
@@ -166,10 +160,10 @@ export default {
       selected: null,
       fullName: [],
       fullNameKey: [],
-      userName: false,
+      userName: '',
       isEditable: false,
       users: [],
-      id:0,
+      id: 0,
     };
   },
   methods: {
@@ -196,22 +190,22 @@ export default {
         status: this.status.value,
         priority: this.priority.value,
         due_date: this.dueDate,
-        user_id: this.userName,
+        user_id: this.userName.value,
       })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
           //console.log(success);
           this.isEditable = false;
           this.resetForm();
-         console.log(this.$router.push('/todo'))
+          console.log(this.$router.push("/todo"));
         })
         .catch((error) => {
           //this.toastMessage(error.response.data.message, "danger");
-            let err  = error.response.data.data;
+          let err = error.response.data.data;
 
-            Object.values(err).forEach(val => {
-                this.toastMessage(val[0],'danger')
-            });
+          Object.values(err).forEach((val) => {
+            this.toastMessage(val[0], "danger");
+          });
         });
     },
     // toast message for comman use
@@ -248,11 +242,21 @@ export default {
         this.status.title = todo.priority === true ? "Undone" : "Done";
         this.status.value = todo.status;
         this.isEditable = true;
-        this.userName = todo.user.id;
+        this.userName = {
+          title: todo.user.first_name,
+          value: todo.user.id
+        }
       });
     },
   },
-
+  computed: {
+    userData() {
+      return this.users.map((user) => ({
+        title: user.first_name,
+        value: user.id,
+      }));
+    },
+  },
   async created() {
     const pluck = (arr, key) => arr.map((i) => i[key]);
     // get login user token
@@ -267,9 +271,9 @@ export default {
         // Get First name and last name with merge
 
         this.users = success.data.data.users;
-        // this.fullName = success.data.data.users.map(function (element) {
-        //   return `${element.first_name} ${element.last_name}`;
-        // });
+        this.fullName = success.data.data.users.map(function (element) {
+          return `${element.first_name} ${element.last_name}`;
+        });
 
         // let fname = success.data.data.users.map(function (element) {
         //   return `${element.first_name} ${element.last_name}`;
@@ -287,12 +291,12 @@ export default {
   },
   // props:['id'],
   mounted() {
-    this.id = this.$route.params.id
+    this.id = this.$route.params.id;
     console.log(this.id);
     if (this.id > 0) {
       this.fillUpFormData();
     }
-  }
+  },
 };
 </script>
 <style lang="scss">
