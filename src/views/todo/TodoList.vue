@@ -134,10 +134,30 @@
           @filtered="onFiltered"
         >
           <!-- status column  -->
-          <template #cell(status)="data">
+          <!-- <template #cell(status)="data">
             <b-badge :variant="status[1][data.value]">
               {{ status[0][data.value] }}
             </b-badge>
+          </template> -->
+
+          <!-- Active Deactive a status -->
+          <template #cell(status)="data">
+            <div>
+                <b-form-checkbox
+                    v-model="data.item.status"
+                    class="custom-control-success"
+                    name="check-button"
+                    switch
+                    @change="changeTodoStatus(data.item.status,data.item.id)"
+                  >
+                  <span class="switch-icon-left">
+                    <feather-icon icon="CheckIcon" />
+                  </span>
+                  <span class="switch-icon-right">
+                    <feather-icon icon="XIcon" />
+                  </span>
+                </b-form-checkbox>
+              </div>
           </template>
 
           <!-- Priority column -->
@@ -252,7 +272,9 @@ import {
   BDropdown,
   BDropdownItem,
   BModal, VBModal,
-  BLink
+  BLink,
+  BFormCheckbox,
+  BCardText,
 } from "bootstrap-vue";
 import axios from "axios";
 import Ripple from "vue-ripple-directive";
@@ -283,6 +305,8 @@ export default {
     AddTodoTask,
     BModal, 
     VBModal,
+    BFormCheckbox,
+    BCardText,
 },
   directives: {
     Ripple,
@@ -313,19 +337,20 @@ export default {
         { key: "user.first_name", label: "User", sortable: true },
         { key: "avatar", label: "Image" },
         { key: "action", label: "Action", value: "id" },
+        { key: "status" , label: "Status", sortable: true}
         //   { key: "is_active", label: "Status", sortable: true },
       ],
       items: [],
-      status: [
-        {
-          true: "Done",
-          false: "Undone",
-        },
-        {
-          true: "light-success",
-          false: "light-danger",
-        },
-      ],
+      // status: [
+      //   {
+      //     true: "true",
+      //     false: "false",
+      //   },
+      //   {
+      //     true: "custom-control-success",
+      //     false: "custom-control-danger",
+      //   },
+      // ],
       priority: [
         {
           low: "LOW",
@@ -508,8 +533,38 @@ export default {
           fileLink.click();
         })
     },
+    //close modal after data update
     closeModal() {
       this.isModalDisplay = false;
+    },
+    //Change TodoStatus value
+    changeTodoStatus(status,id) {
+      let message = !status ? 'Deactive' : 'Active';
+        this.$swal({
+        title: `Are you sure ${message} status ?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: message,
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+      }).then(result => {
+        if (result.value) {
+          this.updateTodoStatus(id,status)
+        }
+      })
+    },
+    //update todo status
+    async updateTodoStatus(id,status) {
+      axios.put(`todo/update-status/${id}`,{
+        status: status ? 1 : 0
+      }).then((success) => {
+        if(success.data.status == 200) {
+          this.fillTodoTable();
+        }
+      })
     }
   }
 };
