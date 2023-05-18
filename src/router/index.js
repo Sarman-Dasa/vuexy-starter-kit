@@ -189,6 +189,11 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/test-vue',
+      name: 'test-vue',
+      component: () => import('@/views/Test/Test.vue'),
+    },
+    {
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
@@ -211,6 +216,21 @@ router.afterEach(() => {
   if (appLoading) {
     appLoading.style.display = 'none'
   }
+})
+
+//Check authantication 
+router.beforeEach((to,from,next) => {
+  let auth_user = JSON.parse(localStorage.getItem("userData"));
+
+  if(to.name !== 'login' && to.name !== 'registration' && to.name !== 'forgot-password' && to.name !== 'reset-password' && to.name !== 'login-mobile') {
+    if(!auth_user) {
+      next({
+        name: 'login'
+      })
+    }
+    if(auth_user) next()
+  }
+ return next()
 })
 
 export default router
