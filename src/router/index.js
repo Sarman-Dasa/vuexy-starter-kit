@@ -160,12 +160,34 @@ const router = new VueRouter({
     },
     {
       path: '/apps-todo-filter-tag/:tag',
-      name:'apps-todo-filter-tag',
+      name:'apps-todo-filter-tag-high',
       component: () => import('@/views/todo/TodoList.vue'),
-      beforeEnter(to, _, next) {
-        if ([ 'low', 'medium', 'high'].includes(to.params.tag)) next()
-        else next({ name: 'error-404' })
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
       },
+    },
+    {
+      path: '/apps-todo-filter-tag/:tag',
+      name:'apps-todo-filter-tag-low',
+      component: () => import('@/views/todo/TodoList.vue'),
+      meta: {
+        breadcrumb :[
+          {
+            text: 'Todo',
+            active:true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/apps-todo-filter-tag/:tag',
+      name:'apps-todo-filter-tag-medium',
+      component: () => import('@/views/todo/TodoList.vue'),
       meta: {
         breadcrumb :[
           {
