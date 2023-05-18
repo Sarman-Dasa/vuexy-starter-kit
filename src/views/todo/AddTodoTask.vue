@@ -163,7 +163,7 @@ export default {
       userName: '',
       isEditable: false,
       users: [],
-      id: 0,
+      //id: 0,
     };
   },
   methods: {
@@ -195,17 +195,26 @@ export default {
         .then((success) => {
           this.toastMessage(success.data.message, "success");
           //console.log(success);
-          this.isEditable = false;
           this.resetForm();
-          console.log(this.$router.push("/todo"));
+          if(this.isEditable) {
+            // Call fillTodoTable() method to show updated data in table
+            this.fillTodo();
+            // use when data edit using modal componet 
+            // hide a modal after data update 
+            this.closeModal();
+            this.isEditable = false;
+          }
+          else
+            console.log(this.$router.push("/todo"));
         })
         .catch((error) => {
           //this.toastMessage(error.response.data.message, "danger");
           let err = error.response.data.data;
-
+          
           Object.values(err).forEach((val) => {
             this.toastMessage(val[0], "danger");
           });
+         
         });
     },
     // toast message for comman use
@@ -289,10 +298,11 @@ export default {
         // console.log();
       });
   },
-  // props:['id'],
+  props:['id','fillTodo','closeModal'],
   mounted() {
-    this.id = this.$route.params.id;
-    console.log(this.id);
+    // when edit data form fill up base on route id 
+    //this.id = this.$route.params.id;
+    console.log("Edit Data Id ::",this.id);
     if (this.id > 0) {
       this.fillUpFormData();
     }
