@@ -171,8 +171,10 @@
                 />
               </template>
               <b-dropdown-item>
+                <span v-b-modal.updateTodoModal @click="editData(data.item.id)">
                 <feather-icon icon="Edit2Icon" class="mr-50" />
-                <span v-b-modal.modal-select2>Edit</span>
+                    Edit
+                </span>
                 <!-- <b-link :to="{ name: 'todo-edit', params:{id:data.item.id}}"  v-b-modal.modal-select2>edit</b-link> -->
               </b-dropdown-item>
               <b-dropdown-item>
@@ -206,31 +208,27 @@
         />
       </b-col>
     </b-row>
-
+    <!-- modal -->
     <b-row>
-      <b-col>
-      <b-button
-        v-ripple.500="'rgba(113, 102, 240, 0.15)'"
-        v-b-modal.modal-select2
-        variant="outline-primary"
-      >
-        Select2 With Modal
-      </b-button>
-      </b-col>
-      <b-col cols="12">
+      <b-col cols="12" v-if="isModalDisplay">
         <b-modal
-          id="modal-select2"
+          id="updateTodoModal"
           title="Update Todo"
-          ok-title="submit"
           size="lg"
           centered
+          ok-title="cancel"
+          ok-variant="danger"
           header-bg-variant="info"
-          header-text-variant="light"
+          header-text-variant="dark"
           body-bg-variant="light"
           body-text-variant="dark"
+          :show-ok="false"
+          footer-bg-variant="info"
           cancel-variant="outline-secondary"
+          ok-only
+          @ok.prevent="closeModal()"
         >
-          <AddTodoTask />
+          <AddTodoTask :id="editId" :fillTodo="fillTodoTable" :closeModal="closeModal"/>
         </b-modal>
       </b-col>
     </b-row>
@@ -253,6 +251,7 @@ import {
   BButton,
   BDropdown,
   BDropdownItem,
+  BModal, VBModal,
   BLink
 } from "bootstrap-vue";
 import axios from "axios";
@@ -281,10 +280,13 @@ export default {
     BDropdownItem,
     BLink,
     flatPickr,
-    AddTodoTask
+    AddTodoTask,
+    BModal, 
+    VBModal,
 },
   directives: {
     Ripple,
+    'b-modal': VBModal,
   },
   data() {
     return {
@@ -339,7 +341,9 @@ export default {
       today: "",
       datefilter:'',
       statusFilter:null,
-      searchDisabled:true
+      searchDisabled:true,
+      editId:null,
+      isModalDisplay:true
     };
   },
   computed: {
@@ -396,42 +400,10 @@ export default {
       console.log(this.$route.params.tag);
     }
   },
-  // beforeRouteUpdate(to, from, next) {
-  //   let parm = this.$route.params;
-  //     if(parm.tag) {
-  //       this.filter = this.$route.params.tag;
-  //     }
-  //     else{
-  //        this.statusFilter = this.$route.params.filter
-  //     }
-  //    next()
-  // },
   mounted() {
     this.fillTodoTable();
     this.filter = this.$route.params.tag;
     this.statusFilter = this.$route.params.filter;
-    /* 
-      console.log("Filter: ",this.statusFilter);
-      this.$watch( ()=> this.$route.path,(to, from)=> {
-          console.log('route path has changed from ' +from+' to '+to )
-        })
-        this.$watch( ()=> this.$route.path,(to, from)=> {
-          console.log('route path has changed from '+ this.$route.params[0] )
-        }) 
-
-      this.$router.history.listen((newLocation) =>{
-        if(newLocation.params.tag) {
-          this.filter = newLocation.params.tag;
-          console.log("If Filter: ",this.statusFilter);
-        }else {
-          this.statusFilter = newLocation.params.filter;
-          console.log("Else Filter: ",this.statusFilter);
-        }
-        //console.log(newLocation.params);
-        // console.log("Filter: ",this.statusFilter);
-    
-      })
-    */
   },
   destroyed() {
     this.statusFilter = '';
@@ -442,6 +414,7 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
+    // Todo Table data fill
     async fillTodoTable() {
       this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
       await axios.post("todo/list").then((success) => {
@@ -455,7 +428,8 @@ export default {
     },
     //send edit data id 
     editData(id) {
-      this.$emit("todo_id", id);
+      this.isModalDisplay = true;
+      this.editId  = id;
     },
     deleteData(id) {
      this.$swal({
@@ -533,6 +507,9 @@ export default {
           document.body.appendChild(fileLink);
           fileLink.click();
         })
+    },
+    closeModal() {
+      this.isModalDisplay = false;
     }
   }
 };
