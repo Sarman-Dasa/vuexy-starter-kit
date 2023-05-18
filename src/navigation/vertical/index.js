@@ -35,15 +35,15 @@ export default [
       },
       { 
         title: 'High', 
-        route: { name: 'apps-todo-filter-tag', params: { tag: 'high' } } 
+        route: { name: 'apps-todo-filter-tag-high', params: { tag: 'high' } } 
       },
       { 
         title: 'Low', 
-        route: { name: 'apps-todo-filter-tag', params: { tag: 'low' } } 
+        route: { name: 'apps-todo-filter-tag-low', params: { tag: 'low' } } 
       },
       { 
         title: 'Medium', 
-        route: { name: 'apps-todo-filter-tag', params: { tag: 'medium' } } 
+        route: { name: 'apps-todo-filter-tag-medium', params: { tag: 'medium' } } 
       },
     ],
   },
