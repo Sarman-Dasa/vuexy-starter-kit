@@ -32,9 +32,10 @@ require('@core/scss/core.scss')
 require('@/assets/scss/style.scss')
 
 //Set axios base url
-axios.defaults.baseURL = "http://localhost:8000/api/";
+//axios.defaults.baseURL = "http://localhost:8000/api/";
+axios.defaults.baseURL = process.env.VUE_APP_API_URL
 
-
+console.log("Base URL ::",process.env.VUE_APP_API_URL);
 Vue.config.productionTip = false
 
 new Vue({
