@@ -78,7 +78,7 @@
             icon="CheckSquareIcon"
             class="mr-50"
           />
-          <span>Task</span>
+          <b-link to="/todo">Task</b-link>
         </b-dropdown-item>
 
         <b-dropdown-item link-class="d-flex align-items-center">
