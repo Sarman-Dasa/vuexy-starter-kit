@@ -397,11 +397,11 @@ export default {
       if (this.datefilter) {
          results = results.filter(byDate);
       }
-      if(this.statusFilter !=null) {
+      if(this.statusFilter !==null) {
         results = results.filter(byStatus);
       }
       this.totalRows = results.length;
-      console.log("Total Row :",this.totalRows );
+      //console.log("Total Row :",this.totalRows );
       this.currentPage = 1;
       return results;
     },
@@ -414,21 +414,22 @@ export default {
       this.searchDisabled = false;
       if(parm.tag) {
         this.filter = this.$route.params.tag;
-       // this.searchDisabled = false;
       }
       else if(parm.filter){
          this.statusFilter = this.$route.params.filter
-       //  this.searchDisabled = false;
       } else {
         this.searchDisabled = true;
       }
-      console.log(this.$route.params.tag);
     }
   },
   mounted() {
     this.fillTodoTable();
-    this.filter = this.$route.params.tag;
-    this.statusFilter = this.$route.params.filter;
+    // check in first time route parameter is set or not 
+    //this.filter = typeof this.$route.params.tag === 'undefined' ? null : this.$route.params.tag;
+    this.filter = this.$route.params.tag ??= null;
+    //console.log("Mounted Filter::",this.filter);
+
+    this.statusFilter = typeof this.$route.params.filter === 'undefined' ? null : this.$route.params.filter;
   },
   destroyed() {
     this.statusFilter = '';
@@ -448,8 +449,9 @@ export default {
       // Set the initial number of items
       this.totalRows = this.items.length;
       var currentDate = new Date();
-      let cdate = currentDate.toLocaleDateString();
-      this.today = moment(String(cdate)).format("Y-DD-MM");
+      const current = new Date();
+       this.today = moment(currentDate).format('YYYY-MM-DD');
+       console.log("Todat Date::",this.today,"Current Date::",currentDate);
     },
     //send edit data id 
     editData(id) {
