@@ -12,5 +12,23 @@ export default {
            //2nd way
            state.title = "@"+payload.title;
         }
+    },
+    actions: {
+        //1st way
+        // newTitle(context,payload) {
+        //    setTimeout(() => {
+        //     context.commit('setNewTitle',payload)
+        //    },2000)  
+        // }
+
+        //2nd way
+        newTitle(context,payload) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    context.commit('setNewTitle',payload)
+                    resolve('ok')
+                   }, 2000)  
+            })
+         }
     }
 }
