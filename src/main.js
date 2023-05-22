@@ -15,6 +15,11 @@ import '@/libs/portal-vue'
 import '@/libs/toastification'
 
 import VueSweetalert2 from 'vue-sweetalert2';
+
+import "chart.js";
+import 'hchs-vue-charts';
+
+Vue.use(window.VueCharts);
  
 Vue.use(VueSweetalert2);
 
