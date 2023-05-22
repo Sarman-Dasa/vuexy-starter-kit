@@ -1,31 +1,45 @@
 <template>
   <div>
-    <b-card title="Kick start your project 🚀">
-      <b-card-text>All the best for your new project.</b-card-text>
-      <b-card-text>Please make sure to read our <b-link
-        href="https://pixinvent.com/demo/vuexy-vuejs-admin-dashboard-template/documentation/"
-        target="_blank"
+    <b-card title="State managment">
+      <b-card-text>
+      Data get from store <b>{{ $store.state.myStore.title }}</b>
+      </b-card-text>
+      <b-button
+      variant="primary"
+      @click="changeTitle"
       >
-        Template Documentation
-      </b-link> to understand where to go from here and how to use our template.</b-card-text>
-    </b-card>
-
-    <b-card title="Want to integrate JWT? 🔒">
-      <b-card-text>We carefully crafted JWT flow so you can implement JWT with ease and with minimum efforts.</b-card-text>
-      <b-card-text>Please read our  JWT Documentation to get more out of JWT authentication.</b-card-text>
+        Change
+      </b-button>
     </b-card>
   </div>
 </template>
 
 <script>
-import { BCard, BCardText, BLink } from 'bootstrap-vue'
+import { BCard, BCardText, BLink, BButton } from 'bootstrap-vue'
 
 export default {
   components: {
     BCard,
     BCardText,
     BLink,
+    BButton,
   },
+  methods: {
+    changeTitle() {
+      
+      // basic syntax
+      //this.$store.commit('setNewTitle','new title');
+
+      //if using namespaced modules ensure you prefix the module e.g. this.$store.commit('moduleName/myMutation');
+      //1st way
+      this.$store.commit('myStore/setNewTitle','new title');
+
+      //2nd way pass data as object
+      this.$store.commit('myStore/setNewTitle',{
+        title:'set title using object type data'
+      })
+    }
+  }
 }
 </script>
 
