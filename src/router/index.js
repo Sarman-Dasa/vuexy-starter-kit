@@ -213,7 +213,7 @@ const router = new VueRouter({
     {
       path: '/test-vue',
       name: 'test-vue',
-      component: () => import('@/views/Test/Test.vue'),
+      component: () => import('@/views/Test/Chart.vue'),
     },
     {
       path: '/error-404',
