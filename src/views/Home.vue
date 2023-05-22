@@ -28,12 +28,21 @@
           Change using action
         </b-button>
     </b-card>
+    <b-card>
+      getters Normar value::  {{ hashAdd }}
+    </b-card>
+    <b-card>
+      call one getters to other getter:: {{ hashNewAdd }}
+    </b-card>
+    <b-card>
+     parameter Getters:: {{newUserId('123') }}
+    </b-card>
   </div>
 </template>
 
 <script>
 import { BCard, BCardText, BLink, BButton,BFormGroup,BFormInput } from 'bootstrap-vue'
-
+import { mapGetters } from 'vuex';
 export default {
   components: {
     BCard,
@@ -48,6 +57,23 @@ export default {
       title:'',
     }
   },
+  computed: {
+    ...mapGetters('myStore',[
+    'hashAdd',
+    'hashNewAdd',
+    'newUserId',
+  ]),
+    hashAdd() {
+      return this.$store.getters['myStore/hashAdd'];
+    },
+    hashNewAdd() {
+      return this.$store.getters['myStore/hashNewAdd']
+    },
+    newUserId() {
+      return this.$store.getters['myStore/newUserId']
+    }
+  },
+ 
   methods: {
     changeTitle() {
       
