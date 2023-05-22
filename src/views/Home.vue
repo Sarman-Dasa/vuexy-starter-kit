@@ -13,12 +13,20 @@
 
         </b-form-input>
       </b-form-group>
-      <b-button
-      variant="primary"
-      @click="changeTitle"
-      >
-        Change
-      </b-button>
+        <b-button
+        variant="primary"
+        @click="changeTitle"
+       class="mr-1"
+        >
+          Change using mutations
+        </b-button>
+        <b-button
+        variant="primary"
+        @click="changeTitleAction"
+        
+        >
+          Change using action
+        </b-button>
     </b-card>
   </div>
 </template>
@@ -55,6 +63,23 @@ export default {
         title:this.title
       })
       this.title = '';
+    },
+    changeTitleAction()
+    {
+      //1st way
+
+      // this.$store.dispatch('myStore/newTitle',{
+      //   title:this.title
+      // })
+
+      //2nd way
+
+      this.$store.dispatch({
+        type:'myStore/newTitle',
+        title:this.title
+      }).then((response) => {
+        console.log(response);
+      })
     }
   }
 }
