@@ -22,7 +22,9 @@
         </b-button>
         <b-button
         variant="primary"
-        @click="changeTitleAction"
+        @click="changeTitleAction({title:title})"
+        v-b-tooltip.hover.v-info
+        title="data change after 2 sec."
         
         >
           Change using action
@@ -41,8 +43,8 @@
 </template>
 
 <script>
-import { BCard, BCardText, BLink, BButton,BFormGroup,BFormInput } from 'bootstrap-vue'
-import { mapGetters } from 'vuex';
+import { BCard, BCardText, BLink, BButton,BFormGroup,BFormInput,VBTooltip } from 'bootstrap-vue'
+import { mapGetters,mapActions } from 'vuex';
 export default {
   components: {
     BCard,
@@ -52,26 +54,29 @@ export default {
     BFormGroup,
     BFormInput
   },
+  directives: {
+    'b-tooltip': VBTooltip,
+  },
   data() {
     return {
       title:'',
     }
   },
   computed: {
-    ...mapGetters('myStore',[
-    'hashAdd',
-    'hashNewAdd',
-    'newUserId',
-  ]),
-    hashAdd() {
-      return this.$store.getters['myStore/hashAdd'];
-    },
-    hashNewAdd() {
-      return this.$store.getters['myStore/hashNewAdd']
-    },
-    newUserId() {
-      return this.$store.getters['myStore/newUserId']
-    }
+    ...mapGetters('myStore',{
+        hashAdd:'hashAdd',
+        hashNewAdd:'hashNewAdd',
+        newUserId:'newUserId',
+    }),
+    // hashAdd() {
+    //   return this.$store.getters['myStore/hashAdd'];
+    // },
+    // hashNewAdd() {
+    //   return this.$store.getters['myStore/hashNewAdd']
+    // },
+    // newUserId() {
+    //   return this.$store.getters['myStore/newUserId']
+    // }
   },
  
   methods: {
@@ -90,7 +95,12 @@ export default {
       })
       this.title = '';
     },
-    changeTitleAction()
+    //call a action method 
+    ...mapActions('myStore',{
+        changeTitleAction:'newTitle'
+    })
+
+    /* changeTitleAction()
     {
       //1st way
 
@@ -106,7 +116,7 @@ export default {
       }).then((response) => {
         console.log(response);
       })
-    }
+    } */
   }
 }
 </script>
