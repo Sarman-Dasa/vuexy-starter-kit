@@ -4,6 +4,15 @@
       <b-card-text>
       Data get from store <b>{{ $store.state.myStore.title }}</b>
       </b-card-text>
+      <b-form-group>
+        <b-form-input
+          lable="Add Title"
+          label-cols-md="2"
+          v-model="title"
+        >
+
+        </b-form-input>
+      </b-form-group>
       <b-button
       variant="primary"
       @click="changeTitle"
@@ -15,7 +24,7 @@
 </template>
 
 <script>
-import { BCard, BCardText, BLink, BButton } from 'bootstrap-vue'
+import { BCard, BCardText, BLink, BButton,BFormGroup,BFormInput } from 'bootstrap-vue'
 
 export default {
   components: {
@@ -23,6 +32,13 @@ export default {
     BCardText,
     BLink,
     BButton,
+    BFormGroup,
+    BFormInput
+  },
+  data() {
+    return {
+      title:'',
+    }
   },
   methods: {
     changeTitle() {
@@ -32,12 +48,13 @@ export default {
 
       //if using namespaced modules ensure you prefix the module e.g. this.$store.commit('moduleName/myMutation');
       //1st way
-      this.$store.commit('myStore/setNewTitle','new title');
+      //this.$store.commit('myStore/setNewTitle','new title');
 
       //2nd way pass data as object
       this.$store.commit('myStore/setNewTitle',{
-        title:'set title using object type data'
+        title:this.title
       })
+      this.title = '';
     }
   }
 }
