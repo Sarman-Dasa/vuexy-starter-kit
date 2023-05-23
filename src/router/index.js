@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import store from '@/store'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -36,6 +36,7 @@ const router = new VueRouter({
             active: true,
           },
         ],
+        middleWare: ['humanResource','superAdmin']
       },
     },
     {
@@ -96,6 +97,7 @@ const router = new VueRouter({
             active: true,
           },
         ],
+        middleWare: ['superAdmin']
       },
     },
     {
@@ -242,15 +244,18 @@ router.afterEach(() => {
 
 //Check authantication 
 router.beforeEach((to,from,next) => {
-  let auth_user = JSON.parse(localStorage.getItem("userData"));
+  let auth_user = store.state.app.authTokenData;
 
   if(to.name !== 'login' && to.name !== 'registration' && to.name !== 'forgot-password' && to.name !== 'reset-password' && to.name !== 'login-mobile') {
     if(!auth_user) {
-      next({
-        name: 'login'
-      })
+      next({ name: 'login' })
     }
-    if(auth_user) next()
+    if(auth_user) {
+      let loginUser = store.state.app.userInfoData;
+      if(to.meta && to.meta.middleWare && !to.meta.middleWare.includes(loginUser.role)){
+        next({ name: 'login' })
+      }else { next() }
+    } 
   }
  return next()
 })
