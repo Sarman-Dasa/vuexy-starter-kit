@@ -442,7 +442,7 @@ export default {
     },
     // Todo Table data fill
     async fillTodoTable() {
-      this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
+      this.token = this.$store.state.app.authTokenData;
       await axios.post("todo/list").then((success) => {
         this.items = success.data.data.todos;
       });

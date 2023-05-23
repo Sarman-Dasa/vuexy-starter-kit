@@ -201,7 +201,7 @@ export default {
     },
   },
   async mounted() {
-    this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
+    this.token = this.$store.state.app.authTokenData;
     console.log("Token :", this.token);
     await axios
       .post("list", {}, { headers: { Authorization: `Bearer ${this.token}` } })
