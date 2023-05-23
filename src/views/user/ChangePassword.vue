@@ -136,6 +136,7 @@ import {
   BButton,
 } from "bootstrap-vue";
 import axios from "axios";
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 export default {
   components: {
     BForm,
@@ -190,7 +191,8 @@ export default {
       });
     },
     async changePassword() {
-       let token = JSON.parse(localStorage.getItem("userData")).accessToken
+       //let token = JSON.parse(localStorage.getItem("userData")).accessToken
+       let token = this.$store.state.app.authTokenData;
         await axios.post('change-password',{
             current_password:this.oldPassword,
             password:this.newPassword,
@@ -198,7 +200,21 @@ export default {
         },{
           headers: {
             Authorization: `Bearer ${token}`,
-        }});
+        }}).then((success) => {
+         this.toastMessage(success.data.message,'success');
+        }).catch((error) => {
+          this.toastMessage(error.response.data.message,'danger');
+        });
+    },
+    toastMessage(message,type) {
+      this.$toast({
+            component: ToastificationContent,
+            props: {
+              title:message,
+              icon: 'EditIcon',
+              variant: type,
+            },
+          })
     }
   },
 };
