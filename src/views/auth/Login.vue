@@ -203,7 +203,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import axios from 'axios'
-
+import CryptoJS from 'crypto-js';
 export default {
   components: {
     BRow,
@@ -268,11 +268,37 @@ export default {
             "Content-Type": "application/json",
           },
         }).then((success) => {
-          if(success.data.data.length>0) {
+          if(success.data.data.token) {
             this.toastMessage(success.data.message,'success')
-            localStorage.setItem('userData',JSON.stringify({"accessToken":success.data.data}))
+            //localStorage.setItem('userData',JSON.stringify({"accessToken":success.data.data}))
+
+            let token = success.data.data.token;
+
+            //set authToken in localstorage
+            this.$store.commit('app/UPDATE_AUTH_TOKEN',token);
+            localStorage.setItem('authTokenData',CryptoJS.AES.encrypt(token,process.env.VUE_APP_SECRET_KEY).toString());
+            //console.log("UserToken::",this.$store.state.app.authTokenData);
+            
+            //set user info in localstorage
+            let userInfo = success.data.data.user;
+            axios.get(`role/get/${userInfo.role_id}`).then((success) => {
+                userInfo.role =  success.data.data.role;
+                this.$store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
+                console.log("State User ::",this.$store.state.app.userInfoData.role);
+                userInfo = CryptoJS.AES.encrypt(JSON.stringify(userInfo),process.env.VUE_APP_SECRET_KEY).toString();
+                localStorage.setItem('userInfoData',userInfo);
+            });
+
+            // userRole.then((result) => {
+            //   console.log("UserInfo::",userInfo);
+            //   userInfo = CryptoJS.AES.encrypt(JSON.stringify(userInfo),process.env.VUE_APP_SECRET_KEY).toString();
+            //   localStorage.setItem('userInfoData',userInfo);
+            // })
+           // console.log("User Role OutSide::",userRole);
+            // console.log("UserInfo::",userInfo);
+
+            //localStorage.setItem('userInfoData',userInfo);
             this.$router.push('/');
-            console.log(success.data);
           }
           else {
             this.toastMessage(success.data.message,'danger');
