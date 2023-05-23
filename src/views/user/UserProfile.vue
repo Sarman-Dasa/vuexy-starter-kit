@@ -231,12 +231,7 @@ export default {
     }
   },
   async mounted() {
-    this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
-    await axios
-      .get("get", { headers: { Authorization: `Bearer ${this.token}` } })
-      .then((success) => {
-        this.user = success.data.data;
-      });
+    this.user = this.$store.state.app.userInfoData;
   },
 };
 </script>
