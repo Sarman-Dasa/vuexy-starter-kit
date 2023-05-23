@@ -269,7 +269,7 @@ export default {
   async created() {
     const pluck = (arr, key) => arr.map((i) => i[key]);
     // get login user token
-    this.token = JSON.parse(localStorage.getItem("userData")).accessToken;
+    this.token = this.$store.state.app.authTokenData;
 
     //call user list api
     await axios
