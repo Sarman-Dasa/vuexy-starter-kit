@@ -281,13 +281,30 @@ export default {
             
             //set user info in localstorage
             let userInfo = success.data.data.user;
-            axios.get(`role/get/${userInfo.role_id}`).then((success) => {
-                userInfo.role =  success.data.data.role;
-                this.$store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
-                console.log("State User ::",this.$store.state.app.userInfoData.role);
-                userInfo = CryptoJS.AES.encrypt(JSON.stringify(userInfo),process.env.VUE_APP_SECRET_KEY).toString();
-                localStorage.setItem('userInfoData',userInfo);
-            });
+            let user = {
+              id: userInfo.id,
+              email: userInfo.email,
+              first_name: userInfo.first_name,
+              is_active: userInfo.is_active,
+              last_name: userInfo.last_name,
+              phone: userInfo.phone,
+              role: userInfo.role.role
+            }
+            this.$store.commit('app/UPDATE_LOGIN_USER_INFO',user);
+            userInfo = CryptoJS.AES.encrypt(JSON.stringify(user),process.env.VUE_APP_SECRET_KEY).toString();
+            localStorage.setItem('userInfoData',userInfo);
+            this.$router.push('/');
+            
+            
+            //console.log("Login Page UserInfo::",this.$store.state.app.userInfoData);
+            // let userInfo = success.data.data.user;
+            // axios.get(`role/get/${userInfo.role_id}`).then((success) => {
+            //     userInfo.role =  success.data.data.role;
+            //     this.$store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
+            //     console.log("State User ::",this.$store.state.app.userInfoData.role);
+            //     userInfo = CryptoJS.AES.encrypt(JSON.stringify(userInfo),process.env.VUE_APP_SECRET_KEY).toString();
+            //     localStorage.setItem('userInfoData',userInfo);
+            // });
 
             // userRole.then((result) => {
             //   console.log("UserInfo::",userInfo);
@@ -298,7 +315,7 @@ export default {
             // console.log("UserInfo::",userInfo);
 
             //localStorage.setItem('userInfoData',userInfo);
-            this.$router.push('/');
+           
           }
           else {
             this.toastMessage(success.data.message,'danger');
