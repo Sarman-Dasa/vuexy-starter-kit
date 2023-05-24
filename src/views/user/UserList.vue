@@ -108,6 +108,13 @@
                   <a href="#">{{ data.value }}</a>
               </span>
           </template>
+
+          <template #cell(action)="data">
+           <span v-b-modal.update-user-role @click="userId = data.item.id">
+            <feather-icon icon="RepeatIcon"/>
+           </span>
+          </template>
+
         </b-table>
       </b-col>
     </b-row>
@@ -122,6 +129,33 @@
             class="my-0"
           />
       </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols="12">
+        <b-modal
+        id="update-user-role"
+        title="Basic Modal"
+        ref="user-role"
+        centered
+        ok-title="submit"
+        @ok.prevent="changeUserRole"
+        cancel-variant="outline-secondary"
+      >
+        <b-form>
+          <b-form-group
+            label="Choose the country"
+            label-for="role-select"
+          >
+            <v-select
+              id="role-select"
+              v-model="selected"
+              :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+              :options="option"
+            />
+          </b-form-group>
+        </b-form>
+      </b-modal>
+        </b-col>
     </b-row>
 </div>
 </template>
@@ -140,8 +174,13 @@ import {
   BFormInput,
   BInputGroupAppend,
   BButton,
+  BModal, VBModal,
+  BForm
 } from "bootstrap-vue";
+import vSelect from 'vue-select'
 import axios from "axios";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+
 export default {
   components: {
     BTable,
@@ -156,6 +195,9 @@ export default {
     BFormInput,
     BInputGroupAppend,
     BButton,
+    BModal,
+    vSelect,
+    BForm
   },
   data() {
     return {
@@ -178,6 +220,8 @@ export default {
         { key: "phone", label: "Phone", sortable: true },
         { key: "email", label: "Email", sortable: true },
         { key: "is_active", label: "Status", sortable: true },
+        { key: "role.role", label: 'Role'},
+        { key: "action", label:'Change Role', value:'id'}
       ],
       items: [],
       is_active: [
@@ -190,7 +234,17 @@ export default {
           false: "light-primary",
         },
       ],
+      selected: '---Change Role---',
+      option: [
+        {label: 'Super Admin', value:1},
+        {label: 'Employee', value:2},
+        {label: 'HR', value:3},
+      ],
+      userId:null
     };
+  },
+  directives: {
+    'b-modal': VBModal,
   },
   computed: {
     sortOptions() {
@@ -200,16 +254,8 @@ export default {
         .map((f) => ({ text: f.label, value: f.key }));
     },
   },
-  async mounted() {
-    this.token = this.$store.state.app.authTokenData;
-    console.log("Token :", this.token);
-    await axios
-      .post("list", {}, { headers: { Authorization: `Bearer ${this.token}` } })
-      .then((success) => {
-        this.items = success.data.data.users;
-      });
-    // Set the initial number of items
-    this.totalRows = this.items.length;
+   mounted() {
+    this.fillUserList();
   },
   methods: {
     onFiltered(filteredItems) {
@@ -217,6 +263,44 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
+    async fillUserList() {
+      this.token = this.$store.state.app.authTokenData;
+      console.log("Token :", this.token);
+      await axios
+        .post("list", {}, { headers: { Authorization: `Bearer ${this.token}` } })
+        .then((success) => {
+          this.items = success.data.data.users;
+        });
+      // Set the initial number of items
+      this.totalRows = this.items.length;
+    },
+    async changeUserRole(id) {
+
+      await axios.put(`update-role/${this.userId}`,{
+        role_id: this.selected.value,
+      },{
+        headers: {Authorization: `Bearer ${this.token}`}
+      })
+      .then((success) => {
+        this.toastMessage(success.data.message,'success');
+        this.$refs['user-role'].isShow=false;
+        this.fillUserList();
+      })
+    },
+     // toast message for comman use
+     toastMessage(message, type) {
+      this.$toast({
+        component: ToastificationContent,
+        props: {
+          title: message,
+          icon: "EditIcon",
+          variant: type,
+        },
+      });
+    },
   },
 };
 </script>
+<style lang="scss">
+@import "@core/scss/vue/libs/vue-select.scss";
+</style>
