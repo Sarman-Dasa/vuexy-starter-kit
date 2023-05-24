@@ -13,7 +13,7 @@
       <template #aside>
         <b-avatar
           ref="previewEl"
-          :src="image"
+          :src="user.image"
           text="avatarText(userData.fullName)"
           variant="light-primary"
           size="90px"
@@ -187,7 +187,7 @@ export default {
         email: "",
         phone: "",
         is_active: false,
-        userImage:'',
+        userImage:null,
         image:''
       },
       token: "",
@@ -227,11 +227,12 @@ export default {
     },
     uploadFile(e) {
       const file = e.target.files[0];
-      this.image = URL.createObjectURL(file);
+      this.user.image = URL.createObjectURL(file);
     }
   },
   async mounted() {
     this.user = this.$store.state.app.userInfoData;
+    console.log("User Info UserProfile::",this.user);
   },
 };
 </script>
