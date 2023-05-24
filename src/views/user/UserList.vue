@@ -109,9 +109,10 @@
               </span>
           </template>
 
-          <template #cell(action)="data">
+          <template #cell(role.role)="data">
            <span v-b-modal.update-user-role @click="userId = data.item.id">
-            <feather-icon icon="RepeatIcon"/>
+            {{ data.value }}
+            <feather-icon icon="RepeatIcon" class="ml-10"/>
            </span>
           </template>
 
@@ -221,7 +222,7 @@ export default {
         { key: "email", label: "Email", sortable: true },
         { key: "is_active", label: "Status", sortable: true },
         { key: "role.role", label: 'Role'},
-        { key: "action", label:'Change Role', value:'id'}
+        // { key: "action", label:'Change Role', value:'id'}
       ],
       items: [],
       is_active: [
