@@ -218,6 +218,11 @@ const router = new VueRouter({
       component: () => import('@/views/Test/Chart.vue'),
     },
     {
+      path: '/user-data',
+      name: 'user-data',
+      component: () => import('@/views/query/UserData.vue')
+    },
+    {
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
