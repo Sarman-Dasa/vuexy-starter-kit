@@ -136,7 +136,8 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem('userData');
+      localStorage.removeItem('authTokenData');
+      localStorage.removeItem('userInfoData');
       this.$router.push("/login");
     }
   },
