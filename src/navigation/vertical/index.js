@@ -1,19 +1,29 @@
-export default [
+import store from "@/store"
+let userRole = store.state.app.userInfoData.role;
+console.log("User Role::",userRole);
+const menuItem = [ 
   {
     title: 'Home',
     route: 'home',
     icon: 'HomeIcon',
-  },
+  }
+];
+
+const hrMenu = 
   {
     title: 'Second Page',
     route: 'second-page',
     icon: 'FileIcon',
-  },
+  };
+
+const supperAdminMenu = 
   {
     title: 'UserList',
     route: 'user-list',
     icon: 'UserIcon'
-  },
+  };
+
+const employeeMenu=
   {
     title: 'Todo',
     icon: 'CheckSquareIcon',
@@ -46,5 +56,20 @@ export default [
         route: { name: 'apps-todo-filter-tag-medium', params: { tag: 'medium' } } 
       },
     ],
-  },
-]
+  };
+
+if(userRole == 'superAdmin') {
+  menuItem.push(hrMenu);
+  menuItem.push(supperAdminMenu);
+  menuItem.push(employeeMenu);
+}
+
+else if(userRole == 'humanResource') {
+  menuItem.push(hrMenu)
+}
+
+else if(userRole == 'Employee') {
+  menuItem.push(employeeMenu);
+}
+
+export default menuItem;
