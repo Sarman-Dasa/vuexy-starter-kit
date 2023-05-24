@@ -45,17 +45,20 @@ console.log("Base URL ::",process.env.VUE_APP_API_URL)
 Vue.config.productionTip = false
 
 
-//get authToken from localStorage and decrypt
-var token = CryptoJS.AES.decrypt(localStorage.getItem('authTokenData'),process.env.VUE_APP_SECRET_KEY)
-token = token.toString(CryptoJS.enc.Utf8);
-store.commit('app/UPDATE_AUTH_TOKEN',token);
+if(localStorage.getItem('authTokenData') && localStorage.getItem('userInfoData'))
+{
+  //get authToken from localStorage and decrypt
+  var token = CryptoJS.AES.decrypt(localStorage.getItem('authTokenData'),process.env.VUE_APP_SECRET_KEY)
+  token = token.toString(CryptoJS.enc.Utf8);
+  store.commit('app/UPDATE_AUTH_TOKEN',token);
 
-// get userInfo from localStorage and descrypt
+  // get userInfo from localStorage and descrypt
 
-var userInfo = CryptoJS.AES.decrypt(localStorage.getItem('userInfoData'),process.env.VUE_APP_SECRET_KEY)
-userInfo = JSON.parse(userInfo.toString(CryptoJS.enc.Utf8))
+  var userInfo = CryptoJS.AES.decrypt(localStorage.getItem('userInfoData'),process.env.VUE_APP_SECRET_KEY)
+  userInfo = JSON.parse(userInfo.toString(CryptoJS.enc.Utf8))
 
-store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
+  store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
+}
 
 new Vue({
   router,
