@@ -226,6 +226,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/not-authorized',
+      name: 'notAuthorized',
+      component: () => import('@/views/error/NotAuthorized.vue'),
+      meta: {
+        layout: 'full',
+      },
+    },
+    {
       path: '*',
       redirect: 'error-404',
     },
@@ -247,15 +255,14 @@ router.beforeEach((to,from,next) => {
   let auth_user = store.state.app.authTokenData;
 
   if(to.name !== 'login' && to.name !== 'registration' && to.name !== 'forgot-password' && to.name !== 'reset-password' && to.name !== 'login-mobile') {
-    if(!auth_user) {
-      next({ name: 'login' })
-    }
     if(auth_user) {
       let loginUser = store.state.app.userInfoData;
       if(to.meta && to.meta.middleWare && !to.meta.middleWare.includes(loginUser.role)){
-        next({ name: 'login' })
-      }else { next() }
-    } 
+        next({ name: 'notAuthorized' })
+      } else { next() }
+    } else {
+      next({ name: 'login' })
+    }
   }
  return next()
 })
