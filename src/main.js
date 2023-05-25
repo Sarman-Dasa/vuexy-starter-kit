@@ -60,6 +60,33 @@ if(localStorage.getItem('authTokenData') && localStorage.getItem('userInfoData')
   store.commit('app/UPDATE_LOGIN_USER_INFO',userInfo);
 }
 
+//create custome directive
+
+Vue.directive('cutome-text',{
+  bind(el, binding) {
+    el.style.color = '#' + Math.random().toString().slice(2,8);
+  }
+})
+
+Vue.directive('cell-design',{
+  componentUpdated(el,binding) {
+    el.style.borderRadius = '30px'
+    el.style.fontSize='12px'
+    el.style.padding = "5px"
+    el.style.color = '#fff'
+    if(binding.value == 'Employee') {
+      el.style.backgroundColor = '#17a2b8'
+    }
+    if (binding.value ==  'superAdmin') {
+      el.style.backgroundColor = '#28a745'
+    }
+    else {
+      el.style.backgroundColor = '#6c757d'
+    }
+  }
+})
+
+
 new Vue({
   router,
   store,
