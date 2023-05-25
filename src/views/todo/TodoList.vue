@@ -555,6 +555,8 @@ export default {
       }).then(result => {
         if (result.value) {
           this.updateTodoStatus(id,status)
+        } else {
+          this.fillTodoTable();
         }
       })
     },
