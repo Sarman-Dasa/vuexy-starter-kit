@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     sendData() {
-        alert(this.name);
+       this.$router.push({path: "/get-user-data",query:{name:this.name,email:this.email}});
     }
   }
 }
