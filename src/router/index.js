@@ -223,6 +223,11 @@ const router = new VueRouter({
       component: () => import('@/views/query/UserData.vue')
     },
     {
+      path: '/get-user-data',
+      name: 'getuserdata',
+      component: () => import('@/views/query/GetUserData.vue')
+    },
+    {
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
