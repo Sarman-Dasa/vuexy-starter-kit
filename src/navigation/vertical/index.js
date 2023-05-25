@@ -71,5 +71,11 @@ else if(userRole == 'humanResource') {
 else if(userRole == 'Employee') {
   menuItem.push(employeeMenu);
 }
-
+menuItem.push(
+  {
+    title: 'UserData',
+    route: 'user-data',
+    icon: 'UserIcon'
+  }
+);
 export default menuItem;
