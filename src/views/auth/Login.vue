@@ -203,7 +203,7 @@ import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import axios from 'axios'
-import CryptoJS from 'crypto-js';
+import userData from '@/mixin/userData'
 export default {
   components: {
     BRow,
@@ -223,7 +223,7 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
-  mixins: [togglePasswordVisibility],
+  mixins: [togglePasswordVisibility,userData],
   data() {
     return {
       status: '',
@@ -270,30 +270,31 @@ export default {
         }).then((success) => {
           if(success.data.data.token) {
             this.toastMessage(success.data.message,'success')
-            //localStorage.setItem('userData',JSON.stringify({"accessToken":success.data.data}))
-
+            
             let token = success.data.data.token;
 
             //set authToken in localstorage
-            this.$store.commit('app/UPDATE_AUTH_TOKEN',token);
-            localStorage.setItem('authTokenData',CryptoJS.AES.encrypt(token,process.env.VUE_APP_SECRET_KEY).toString());
+            // this.$store.commit('app/UPDATE_AUTH_TOKEN',token);
+            // localStorage.setItem('authTokenData',CryptoJS.AES.encrypt(token,process.env.VUE_APP_SECRET_KEY).toString());
             //console.log("UserToken::",this.$store.state.app.authTokenData);
             
             //set user info in localstorage
             let userInfo = success.data.data.user;
-            let user = {
-              id: userInfo.id,
-              email: userInfo.email,
-              first_name: userInfo.first_name,
-              is_active: userInfo.is_active,
-              last_name: userInfo.last_name,
-              phone: userInfo.phone,
-              role: userInfo.role.role
-            }
-            this.$store.commit('app/UPDATE_LOGIN_USER_INFO',user);
-            userInfo = CryptoJS.AES.encrypt(JSON.stringify(user),process.env.VUE_APP_SECRET_KEY).toString();
-            localStorage.setItem('userInfoData',userInfo);
-            this.$router.push('/');
+            this.loginUserData(token,userInfo);
+
+            // let user = {
+            //   id: userInfo.id,
+            //   email: userInfo.email,
+            //   first_name: userInfo.first_name,
+            //   is_active: userInfo.is_active,
+            //   last_name: userInfo.last_name,
+            //   phone: userInfo.phone,
+            //   role: userInfo.role.role
+            // }
+            // this.$store.commit('app/UPDATE_LOGIN_USER_INFO',user);
+            // userInfo = CryptoJS.AES.encrypt(JSON.stringify(user),process.env.VUE_APP_SECRET_KEY).toString();
+            // localStorage.setItem('userInfoData',userInfo);
+            // this.$router.push('/');
             
             
             //console.log("Login Page UserInfo::",this.$store.state.app.userInfoData);

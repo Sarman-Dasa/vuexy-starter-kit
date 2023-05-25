@@ -150,7 +150,7 @@ import { required } from "@validations";
 import store from "@/store/index";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import axios from "axios";
-
+import userData from '@/mixin/userData'
 export default {
   components: {
     BRow,
@@ -173,10 +173,11 @@ export default {
     ValidationProvider,
     ValidationObserver,
   },
+  mixins:[userData],
   data() {
     return {
       sideImg: require("@/assets/images/pages/login-v2.svg"),
-      // validation rulesimport store from '@/store/index'
+      // validation rules import store from '@/store/index'
       required,
       loader: false,
       tab: true,
@@ -197,12 +198,15 @@ export default {
   },
   methods: {
     validationForm() {
+      // check form validation for mobile number 
       this.$refs.loginValidation.validate().then((success) => {
         if (success) {
           this.loginUser();
         }
       });
     },
+
+    // get otp to entered mobile number 
     async loginUser() {
       this.loader = true;
       await axios
@@ -222,11 +226,13 @@ export default {
         });
       this.loader = false;
     },
+    // check form validation for otp number 
     validationOtpForm() {
       this.$refs.otpValidation.validate().then((success) => {
         this.loginUserWithOtp();
       });
     },
+    //call backend api for check entered otp is valid or not
     async loginUserWithOtp() {
       await axios
         .post("verify-otp", {
@@ -234,12 +240,10 @@ export default {
         })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
-          console.log("token:", success.data.data);
-          localStorage.setItem(
-            "userData",
-            JSON.stringify({ accessToken: success.data.data })
-          );
-          this.$router.push("/");
+          let token =  success.data.data.token;
+          let userInfo = success.data.data.user;
+          //store user info in localStorage 
+          this.loginUserData(token,userInfo);
         })
         .catch((err) => {
           this.toastMessage(err.message, "danger");
