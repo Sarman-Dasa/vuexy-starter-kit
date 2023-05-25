@@ -97,8 +97,8 @@
             </b-badge>
           </template>
           
-          <template #cell(phone)="data">
-              <span class="text-info">
+          <template #cell(first_name)="data">
+              <span v-cutome-text>
                   {{ data.value }}
               </span>
           </template>
@@ -110,7 +110,7 @@
           </template>
 
           <template #cell(role.role)="data">
-           <span v-b-modal.update-user-role @click="userId = data.item.id">
+           <span v-b-modal.update-user-role @click="userId = data.item.id" v-cell-design="data.value">
             {{ data.value }}
             <feather-icon icon="RepeatIcon" class="ml-10"/>
            </span>
@@ -253,7 +253,7 @@ export default {
       return this.fields
         .filter((f) => f.sortable)
         .map((f) => ({ text: f.label, value: f.key }));
-    },
+    }
   },
    mounted() {
     this.fillUserList();
