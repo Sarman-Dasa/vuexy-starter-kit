@@ -1,35 +1,29 @@
 <template>
   <b-card>
     <b-row>
-      <!-- <b-col sm="3" class="d-none d-lg-flex align-items-center p-5">
-        <div
-          class="w-100 d-lg-flex align-items-center justify-content-center px-5"
-        >
-          <b-img fluid src="@/assets/images/logo/logo.svg" alt="User Logo" />
-        </div>
-      </b-col> -->
-
-      <b-media class="mb-2">
+    <b-media class="mb-2">
       <template #aside>
-        <b-avatar
+        <b-img
           ref="previewEl"
           :src="image"
-          text="avatarText(userData.fullName)"
-          variant="light-primary"
-          size="90px"
-          rounded
+          width="100"
+          v-b-tooltip.hover.v-info
+          title="Click here to upload image"
+          @click="uploadFile"
         />
       </template>
-      <h4 class="mb-1">
+      <h4 class="mt-3 user-name">
         {{  user.first_name }}
       </h4>
       <!-- file upload -->
        <b-form-file
         v-model="file"
         name="file"
+        id="user-image"
+        class="hidden"
         placeholder="Choose a file or drop it here..."
         drop-placeholder="Drop file here..."
-        @change="uploadFile"
+        @change="fileName"
       />
     </b-media>
     </b-row>
@@ -37,7 +31,7 @@
     <validation-observer ref="userProfileValidation">
       <b-row>
         <!-- First Name -->
-        <b-col cols="6">
+        <b-col sm="12" md="6">
           <b-form-group
             label="First Name"
             label-for="first-name"
@@ -59,7 +53,7 @@
           </b-form-group>
         </b-col>
         <!-- Last Name -->
-        <b-col cols="6">
+        <b-col sm="12" md="6">
           <b-form-group
             label="Last Name"
             label-for="last-name"
@@ -82,7 +76,7 @@
       </b-row>
       <b-row>
         <!-- Email -->
-        <b-col cols="6">
+        <b-col sm="12" md="6">
           <b-form-group label="Email" label-for="email" label-cols-md="2">
             <validation-provider 
                 #default="{errors}"
@@ -95,7 +89,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col cols="6">
+        <b-col sm="12" md="6">
           <b-form-group label="phone" label-for="phone" label-cols-md="2">
             <validation-provider
                 #default="{errors}"
@@ -109,21 +103,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="12">
-          <!-- checkbox -->
-          <b-form-group>
-            <b-form-checkbox
-              id="status"
-              v-model="user.is_active"
-              name="checkbox-1"
-            >
-              isActive
-            </b-form-checkbox>
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="6">
+        <b-col  sm="12" md="6">
           <b-button type="submit" variant="success" @click="validateData">
             Save change
           </b-button>
@@ -151,7 +131,8 @@ import {
   BMediaBody,
   BLink,
   BImg,
-  BAvatar
+  BAvatar,
+  VBTooltip
 } from "bootstrap-vue";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email } from "@validations";
@@ -189,7 +170,6 @@ export default {
         last_name: "",
         email: "",
         phone: "",
-        is_active: false,
       },
       image:'',
       file:null,
@@ -197,6 +177,9 @@ export default {
       required,
       email,
     };
+  },
+  directives:{
+    'b-tooltip': VBTooltip,
   },
   mixins:[userData],
   methods: {
@@ -249,15 +232,29 @@ export default {
         },
       });
     },
-    uploadFile(e) {
+    uploadFile() {
+      document.getElementById('user-image').click();
+     
+    },
+    fileName(e) {
       const file = e.target.files[0];
-      this.user.image = URL.createObjectURL(file);
+      this.image = URL.createObjectURL(file);
     }
   },
   async mounted() {
     this.user = this.$store.state.app.userInfoData;
     this.image = process.env.VUE_APP_API_IMAGE_PATH+this.user.avtar 
-    console.log("User Info UserProfile::",this.user);
+    // console.log("User Info UserProfile::",this.user);
   },
 };
 </script>
+<style scoped>
+.user-name {
+  border: 1px solid green;
+  padding: 6px;
+  background: #dff;
+  width: 200px;
+  text-align: center;
+  border-radius: 10px;
+}
+</style>
