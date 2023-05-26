@@ -13,7 +13,7 @@
       <template #aside>
         <b-avatar
           ref="previewEl"
-          :src="user.image"
+          :src="image"
           text="avatarText(userData.fullName)"
           variant="light-primary"
           size="90px"
@@ -23,8 +23,10 @@
       <h4 class="mb-1">
         {{  user.first_name }}
       </h4>
+      <!-- file upload -->
        <b-form-file
-        v-model="user.userImage"
+        v-model="file"
+        name="file"
         placeholder="Choose a file or drop it here..."
         drop-placeholder="Drop file here..."
         @change="uploadFile"
@@ -155,6 +157,7 @@ import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email } from "@validations";
 import VuexyLogo from "@core/layouts/components/Logo.vue";
 import axios from "axios";
+import userData from "@/mixin/userData";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 export default {
   components: {
@@ -181,20 +184,21 @@ export default {
   },
   data() {
     return {
-      user: {
+      user:{
         first_name: "",
         last_name: "",
         email: "",
         phone: "",
         is_active: false,
-        userImage:null,
-        image:''
       },
-      token: "",
+      image:'',
+      file:null,
+      token:null,
       required,
       email,
     };
   },
+  mixins:[userData],
   methods: {
     validateData() {
       this.$refs.userProfileValidation.validate().then((success) => {
@@ -204,15 +208,35 @@ export default {
       });
     },
     async updateProfile() {
-        console.log(this.user);
+
+        const obj = this.user;
+        this.token = this.$store.state.app.authTokenData;
+      
+        const formData = new FormData();
+        //working code 
+        for(const [key, value] of Object.entries(obj)) {
+          formData.append(key,value);
+        }
+
+        //print formData in key value 
+        // for (var pair of formData.entries()) {
+        //     console.log("Form Data",pair[0]+ ', ' +typeof pair[1]); 
+        //}
+        if(this.file)
+          formData.append('file', this.file);
+        formData.append('_method','PUT');
         await axios
-        .put("update", this.user, {
+        .post("update", formData, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${this.token}`
           },
         })
         .then((success) => {
           this.toastMessage(success.data.message, "success");
+          console.log(success.data.data);
+          let userInfo = success.data.data;
+          this.loginUserData('',userInfo)
         });
     },
     toastMessage(message, type) {
@@ -232,6 +256,7 @@ export default {
   },
   async mounted() {
     this.user = this.$store.state.app.userInfoData;
+    this.image = process.env.VUE_APP_API_IMAGE_PATH+this.user.avtar 
     console.log("User Info UserProfile::",this.user);
   },
 };
