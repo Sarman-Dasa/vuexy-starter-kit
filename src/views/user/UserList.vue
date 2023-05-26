@@ -91,24 +91,39 @@
           :filter-included-fields="filterOn"
           @filtered="onFiltered"
         >
+        <!-- User status -->
           <template #cell(is_active)="data">
-            <b-badge :variant="is_active[1][data.value]">
-              {{ is_active[0][data.value] }}
-            </b-badge>
+            <b-form-checkbox
+                    v-model="data.item.is_active"
+                    class="custom-control-success"
+                    name="check-button"
+                    switch
+                    @change="changeTodoStatus(data.item.is_active,data.item.id)"
+                  >
+                  <span class="switch-icon-left">
+                    <feather-icon icon="CheckIcon" />
+                  </span>
+                  <span class="switch-icon-right">
+                    <feather-icon icon="XIcon" />
+                  </span>
+                </b-form-checkbox>
           </template>
-          
+
+          <!-- first name -->
           <template #cell(first_name)="data">
               <span v-cutome-text>
                   {{ data.value }}
               </span>
           </template>
 
+          <!-- email -->
           <template #cell(email)="data">
               <span class="text-primary">
                   <a href="#">{{ data.value }}</a>
               </span>
           </template>
 
+          <!-- role -->
           <template #cell(role.role)="data">
            <span v-b-modal.update-user-role @click="userId = data.item.id" v-cell-design="data.value">
             {{ data.value }}
@@ -176,7 +191,8 @@ import {
   BInputGroupAppend,
   BButton,
   BModal, VBModal,
-  BForm
+  BForm,
+  BFormCheckbox
 } from "bootstrap-vue";
 import vSelect from 'vue-select'
 import axios from "axios";
@@ -198,7 +214,9 @@ export default {
     BButton,
     BModal,
     vSelect,
-    BForm
+    BForm,
+    BFormCheckbox,
+    VBModal,
   },
   data() {
     return {
@@ -286,6 +304,41 @@ export default {
         this.toastMessage(success.data.message,'success');
         this.$refs['user-role'].isShow=false;
         this.fillUserList();
+      })
+    },
+
+    //Change user status alert dialog box open
+    changeTodoStatus(status,id) {
+      let message = !status ? 'Deactive' : 'Active';
+        this.$swal({
+        title: `Are you sure ${message} status ?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: message,
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+      }).then(result => {
+        if (result.value) {
+          this.updateTodoStatus(id,status)
+        } else {
+          this.fillUserList();
+        }
+      })
+    },
+    
+    //update user status
+    async updateTodoStatus(id,status) {
+      axios.put(`update-status/${id}`,{
+        is_active: status ? 1 : 0
+      },{
+        headers: {Authorization: `Bearer ${this.token}`}
+      }).then((success) => {
+        if(success.data.status == 200) {
+          this.fillUserList();
+        }
       })
     },
      // toast message for comman use
