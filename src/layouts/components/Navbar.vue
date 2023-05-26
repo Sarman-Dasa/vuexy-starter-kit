@@ -37,7 +37,7 @@
             size="40"
             variant="light-primary"
             badge
-            :src="require('@/assets/images/avatars/13-small.png')"
+            :src=image
             class="badge-minimal"
             badge-variant="success"
           />
@@ -125,7 +125,8 @@ export default {
   },
   data() {
     return {
-     user:[]
+     user:[],
+     image:''
     }
   },
   props: {
@@ -143,6 +144,7 @@ export default {
   },
  async mounted() {
       this.user = this.$store.state.app.userInfoData;
+      this.image = process.env.VUE_APP_API_IMAGE_PATH+this.user.avtar 
   }
 }
 </script>
