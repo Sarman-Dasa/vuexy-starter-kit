@@ -23,8 +23,14 @@ export default {
                 this.$store.commit('app/UPDATE_LOGIN_USER_INFO',user);
                 userInfo = CryptoJS.AES.encrypt(JSON.stringify(user),process.env.VUE_APP_SECRET_KEY).toString();
                 localStorage.setItem('userInfoData',userInfo);
+                
+                //this.$router.push({name:'home'});
+            }
+
+            if(this.$route.name != 'profile') {
                 this.$router.push({name:'home'});
             }
+            
         }
     }
 }
