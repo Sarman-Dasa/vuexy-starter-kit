@@ -12,8 +12,9 @@
           @click="uploadFile"
         />
       </template>
+      <!-- user names -->
       <h4 class="mt-3 user-name">
-        {{  user.first_name }}
+        {{  userFullName }}
       </h4>
       <!-- file upload -->
        <b-form-file
@@ -171,6 +172,7 @@ export default {
         email: "",
         phone: "",
       },
+      userFullName:null,
       image:'',
       file:null,
       token:null,
@@ -243,6 +245,7 @@ export default {
   },
   async mounted() {
     this.user = this.$store.state.app.userInfoData;
+    this.userFullName = this.user.first_name + " " + this.user.last_name;
     this.image = process.env.VUE_APP_API_IMAGE_PATH+this.user.avtar 
     // console.log("User Info UserProfile::",this.user);
   },

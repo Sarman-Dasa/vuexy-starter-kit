@@ -30,7 +30,7 @@
         <template #button-content>
           <div class="d-sm-flex d-none user-nav">
             <p class="user-name font-weight-bolder mb-0">
-            {{ user.first_name }} {{  user.last_name }}
+            {{ userFullName}}
             </p>
           </div>
           <b-avatar
@@ -125,8 +125,8 @@ export default {
   },
   data() {
     return {
-     user:[],
-     image:''
+      userFullName:null,
+      image:''
     }
   },
   props: {
@@ -139,12 +139,14 @@ export default {
     logout() {
       localStorage.removeItem('authTokenData');
       localStorage.removeItem('userInfoData');
-      this.$router.push("/login");
+      this.$router.push("/login")
     }
   },
  async mounted() {
-      this.user = this.$store.state.app.userInfoData;
-      this.image = process.env.VUE_APP_API_IMAGE_PATH+this.user.avtar 
-  }
+      let user = this.$store.state.app.userInfoData;
+      this.userFullName = user.first_name + " " + user.last_name; 
+      this.image = process.env.VUE_APP_API_IMAGE_PATH+user.avtar 
+  },
+  
 }
 </script>
