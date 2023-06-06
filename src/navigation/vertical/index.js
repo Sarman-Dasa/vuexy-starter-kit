@@ -1,5 +1,5 @@
 import store from "@/store"
-let userRole = store.state.app.userInfoData.role;
+let userRole = store.state.app.userInfoData ? store.state.app.userInfoData.role : '';
 console.log("User Role::",userRole);
 const menuItem = [ 
   {
@@ -62,6 +62,12 @@ if(userRole == 'superAdmin') {
   menuItem.push(hrMenu);
   menuItem.push(supperAdminMenu);
   menuItem.push(employeeMenu);
+  menuItem.push(
+    {
+      title: 'UserData',
+      route: 'user-data',
+      icon: 'UserIcon'
+    });
 }
 
 else if(userRole == 'humanResource') {
@@ -71,11 +77,4 @@ else if(userRole == 'humanResource') {
 else if(userRole == 'Employee') {
   menuItem.push(employeeMenu);
 }
-menuItem.push(
-  {
-    title: 'UserData',
-    route: 'user-data',
-    icon: 'UserIcon'
-  }
-);
 export default menuItem;
