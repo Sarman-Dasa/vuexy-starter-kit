@@ -131,6 +131,18 @@
            </span>
           </template>
 
+          <!-- image -->
+          <template #cell(image)="data">
+          <b-avatar 
+            size="40"
+            :src="imagePath+data.value"
+            variant="primary"
+            badge
+            class="badge-minimal"
+            :badge-variant="data.item.is_active ? 'success' : 'secondary'"
+          />
+          </template>
+         
         </b-table>
       </b-col>
     </b-row>
@@ -192,7 +204,7 @@ import {
   BButton,
   BModal, VBModal,
   BForm,
-  BFormCheckbox
+  BFormCheckbox,
 } from "bootstrap-vue";
 import vSelect from 'vue-select'
 import axios from "axios";
@@ -216,7 +228,7 @@ export default {
     vSelect,
     BForm,
     BFormCheckbox,
-    VBModal,
+    VBModal   
   },
   data() {
     return {
@@ -230,6 +242,7 @@ export default {
       filter: null,
       filterOn: [],
       fields: [
+      { key: "image", label:"IMAGE"},
         {
           key: "id",
           label: "Id",
@@ -239,7 +252,8 @@ export default {
         { key: "phone", label: "Phone", sortable: true },
         { key: "email", label: "Email", sortable: true },
         { key: "is_active", label: "Status", sortable: true },
-        { key: "role.role", label: 'Role'},
+        { key: "role.role", label: "Role"}
+       
         // { key: "action", label:'Change Role', value:'id'}
       ],
       items: [],
@@ -259,7 +273,8 @@ export default {
         {label: 'Employee', value:2},
         {label: 'HR', value:3},
       ],
-      userId:null
+      userId:null,
+      imagePath:process.env.VUE_APP_API_IMAGE_PATH
     };
   },
   directives: {
