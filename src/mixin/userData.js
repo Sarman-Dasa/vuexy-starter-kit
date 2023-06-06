@@ -28,7 +28,7 @@ export default {
             }
 
             if(this.$route.name != 'profile') {
-                this.$router.push({name:'home'});
+                location.href = process.env.BASE_URL;
             }
             
         }
