@@ -67,7 +67,12 @@ if(userRole == 'superAdmin') {
       title: 'UserData',
       route: 'user-data',
       icon: 'UserIcon'
-    });
+    },{
+      title: 'Main View',
+      route: 'mainView',
+      icon: 'FileIcon'
+    }
+    );
 }
 
 else if(userRole == 'humanResource') {
