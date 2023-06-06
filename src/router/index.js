@@ -227,6 +227,18 @@ const router = new VueRouter({
       name: 'getuserdata',
       component: () => import('@/views/query/GetUserData.vue')
     },
+    //for naming view
+    {
+      path: '/main-view',
+      name: 'mainView',
+      component: () => import('@/views/nameView/MainView.vue')
+    },
+    {
+      path: '/second/:id',
+      name: 'second',
+      component: () => import('@/views/nameView/Second.vue'),
+      props:true
+    },
     {
       path: '/error-404',
       name: 'error-404',
