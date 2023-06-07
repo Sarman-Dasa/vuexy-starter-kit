@@ -85,21 +85,21 @@ const router = new VueRouter({
         ],
       },
     },
-    {
-      path: '/user-list',
-      name: 'user-list',
-      component: () => import('@/views/user/UserList.vue'),
-      meta: {
-        pageTitle: 'User List',
-        breadcrumb: [
-          {
-            text: 'user list',
-            active: true,
-          },
-        ],
-        middleWare: ['superAdmin']
-      },
-    },
+    // {
+    //   path: '/user-list',
+    //   name: 'user-list',
+    //   component: () => import('@/views/user/UserList.vue'),
+    //   meta: {
+    //     pageTitle: 'User List',
+    //     breadcrumb: [
+    //       {
+    //         text: 'user list',
+    //         active: true,
+    //       },
+    //     ],
+    //     middleWare: ['superAdmin']
+    //   },
+    // },
     {
       path: '/login-mobile',
       name: 'login-mobile',
@@ -238,6 +238,22 @@ const router = new VueRouter({
       name: 'second',
       component: () => import('@/views/nameView/Second.vue'),
       props:true
+    },
+    // userlist 
+    {
+      path: '/user-list',
+      name: 'user-list',
+      component: () => import('@/views/user/UserDataList.vue'),
+      meta: {
+        pageTitle: 'User List',
+        breadcrumb: [
+          {
+            text: 'user list',
+            active: true,
+          },
+        ],
+        middleWare: ['superAdmin']
+      },
     },
     {
       path: '/error-404',
