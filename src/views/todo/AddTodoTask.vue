@@ -148,7 +148,6 @@ export default {
       statusOption: [
         { value: 1, title: "Done" },
         { value: 0, title: "UnDone" },
-        { value: 2, title: "Pending" },
       ],
       dueDate: "",
       title: "",
@@ -177,26 +176,66 @@ export default {
     },
 
     // call create api to insert todo data
-    async saveTodo() {
-      let method = axios.post;
-      let url = "todo/create";
-      if (this.isEditable) {
-        method = axios.put;
-        url = `todo/update/${this.id}`;
-      }
-      await method(url, {
+    // async saveTodo() {
+    //   let method = axios.post;
+    //   let url = "todo/create";
+    //   if (this.isEditable) {
+    //     method = axios.put;
+    //     url = `todo/update/${this.id}`;
+    //   }
+    //   await method(url, {
+    //     title: this.title,
+    //     description: this.description,
+    //     status: this.status.value,
+    //     priority: this.priority.value,
+    //     due_date: this.dueDate,
+    //     user_id: this.userName.value,
+    //   })
+    //     .then((success) => {
+    //       this.toastMessage(success.data.message, "success");
+    //       //console.log(success);
+    //       this.resetForm();
+    //       if(this.isEditable) {
+    //         // Call fillTodoTable() method to show updated data in table
+    //         this.fillTodo();
+    //         // use when data edit using modal componet 
+    //         // hide a modal after data update 
+    //         this.closeModal();
+    //         this.isEditable = false;
+    //       }
+    //       else
+    //         console.log(this.$router.push("/todo"));
+    //     })
+    //     .catch((error) => {
+    //       //this.toastMessage(error.response.data.message, "danger");
+    //       let err = error.response.data.data;
+          
+    //       Object.values(err).forEach((val) => {
+    //         this.toastMessage(val[0], "danger");
+    //       });
+         
+    //     });
+    // },
+    async saveTodo() { 
+      let input = {
         title: this.title,
         description: this.description,
         status: this.status.value,
         priority: this.priority.value,
         due_date: this.dueDate,
         user_id: this.userName.value,
-      })
-        .then((success) => {
-          this.toastMessage(success.data.message, "success");
-          //console.log(success);
-          this.resetForm();
-          if(this.isEditable) {
+      }
+      let method = this.getHTTPPostResponse;
+      let url = "todo/create";
+      if (this.isEditable) {
+        method = this.getHTTPPutResponse;
+        url = `todo/update/${this.id}`;
+      }
+      let response = await method(url, input,true);
+
+      if(response && response.data) {
+        this.resetForm();
+        if(this.isEditable) {
             // Call fillTodoTable() method to show updated data in table
             this.fillTodo();
             // use when data edit using modal componet 
@@ -205,17 +244,8 @@ export default {
             this.isEditable = false;
           }
           else
-            console.log(this.$router.push("/todo"));
-        })
-        .catch((error) => {
-          //this.toastMessage(error.response.data.message, "danger");
-          let err = error.response.data.data;
-          
-          Object.values(err).forEach((val) => {
-            this.toastMessage(val[0], "danger");
-          });
-         
-        });
+            this.$router.push("/todo");
+      }
     },
     // toast message for comman use
     toastMessage(message, type) {
@@ -241,21 +271,24 @@ export default {
 
     // Fill up form data when edit button click
     async fillUpFormData() {
-      await axios.get(`todo/get/${this.id}`).then((success) => {
-        let todo = success.data.data;
+
+      let response = await this.getHTTPGetResponse(`todo/get/${this.id}`,{},false);
+
+      if(response && response.data) {
+        let todo = response.data;
         this.title = todo.title;
         this.description = todo.description;
         this.dueDate = todo.due_date;
         this.priority.title = todo.priority;
         this.priority.value = todo.priority;
-        this.status.title = todo.priority === true ? "Undone" : "Done";
+        this.status.title = todo.status === true ? "Done" : "Undone";
         this.status.value = todo.status;
         this.isEditable = true;
         this.userName = {
           title: todo.user.first_name,
           value: todo.user.id
         }
-      });
+      }
     },
   },
   computed: {
