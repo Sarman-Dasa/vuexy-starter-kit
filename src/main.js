@@ -21,8 +21,11 @@ import 'hchs-vue-charts';
 
 import CryptoJS from 'crypto-js';
 
+//Mixin
+import './mixin/mixin.js';
+
 Vue.use(window.VueCharts);
- 
+
 Vue.use(VueSweetalert2);
 
 // BSV Plugin Registration
