@@ -458,7 +458,7 @@ export default {
       this.isModalDisplay = true;
       this.editId  = id;
     },
-    deleteData(id) {
+   deleteData(id) {
      this.$swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -470,11 +470,12 @@ export default {
           cancelButton: 'btn btn-outline-danger ml-1',
         },
         buttonsStyling: false,
-      }).then(result => {
+      }).then(async result => {
         if (result.value) {
-          axios
-        .delete(`todo/delete/${id}`)
-        .then((success) => {
+          
+        let response = await this.getHTTPDeleteResponse(`todo/delete/${id}`,[],true);
+
+        if(response && response.data) {
           this.$swal({
             icon: 'success',
             title: 'Deleted!',
@@ -484,10 +485,8 @@ export default {
             },
           })
           this.fillTodoTable();
-        })
-        .catch((error) => {
-          this.toastMessage("Data not found!!!", "danger");
-        });
+        }
+        
         } else if (result.dismiss === 'cancel') {
           this.$swal({
             title: 'Cancelled',
